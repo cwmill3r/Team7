@@ -19,7 +19,21 @@ let portfolio = {
     10000
   ],
   getStockTotal: function() {
-    
+    let stockAmount = this.applestock;
+    let stockPrice;
+    let totalStock;
+    let tickers = "AAPL"
+    console.log(stockAmount);
+    let request = new XMLHttpRequest();
+    request.open('GET', 'https://www.worldtradingdata.com/api/v1/stock_search?search_term=AAPL&search_by=symbol,name&limit=50&page=1&api_token=y5bn89U9AxqH2xXQebsJS1BNmLMoyCBcaEC2KalzdCKxtK8pabCP0On3d97Y', true);
+    request.onload = function () {
+      let data = JSON.parse(this.response);
+      console.log(data);
+      console.log(data[0].price);
+      stockPrice = data[0].price;
+      document.querySelector('#stockAmountSpan').innerHTML = `$ ${Math.round(stockPrice)}`;
+    };
+    request.send();
   },
   getBitcoinTotal: function() {
     let bitcoinAmount = this.bitcoin;
@@ -87,6 +101,7 @@ const renderMainApp = (portfolio) => {
   renderCashAmount(portfolio);
   renderBitcoinAmount(portfolio);
   renderStudentLoanAmount(portfolio);
+  renderStockAmount(portfolio);
 }
 
 const renderCashAmount = (portfolio) => {
@@ -96,6 +111,11 @@ const renderCashAmount = (portfolio) => {
 const renderBitcoinAmount = (portfolio) => {
   let bitcoinTotal = portfolio.getBitcoinTotal();
   document.querySelector('#bitcoinAmountSpan').innerHTML = `$${bitcoinTotal}`;
+}
+
+const renderStockAmount = (portfolio) => {
+  let stockTotal = portfolio.getStockTotal();
+  document.querySelector('#StockAmountSpan').innerHTML = `$${stockTotal}`;
 }
 
 const renderStudentLoanAmount = (portfolio) => {
@@ -154,3 +174,25 @@ const clearScreen = () => {
 //     // start scrolling
 //     scroll(scrollContainer, scrollContainer.scrollTop, targetY, 0);
 // }
+
+
+function openCurrency(evt, CurrencyName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(CurrencyName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
