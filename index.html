@@ -15,34 +15,39 @@
   <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
   <div class="tab">
     <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Total')" id="defaultOpen">  Total</button>
-    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Edit')">  Edit</button>
+    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Edit'); loadEdit();">  Edit</button>
     <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Watching')">  Watching</button>
   </div>
 
 
 
+<form id="Edit" class="tabcontent">
 
-  <div class="row"style="display: block;">
+
+  <div class="row" style="display: block; ">
     <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
     <div class="col-lg-06 col-md-06 col-sm-12 lig" id="BitcoinMenu">
-      <span style= "padding: 1vh 5vw 1vh 5vw; float: none; ">Menu</span>
+      <span style="display: block; padding: 1vh 5vw 1vh 5vw;" id="coinType">Crypto</span>
       <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Coin: </span><select style="width: 15vw;"><option>A</option></select></span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Amount: </span><input style="width: 15vw"></input></span>
+      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Amount: </span><input id="bitcoinAmount" style="width: 15vw"></input></span>
       <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button>Add</button></span>
     </div>
     <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
   </div>
 
-  <div class="row" style="display: block;">
+  <div class="row" style="display: block; ">
     <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig" id="StockMenu">
-      <span style= "padding: 1vh 5vw 1vh 5vw; float: none;">Menu</span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Stock: </span><select style="width: 15vw;"><option>A</option></select></span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Amount: </span><input style="width: 15vw"></input></span>
+    <div class="col-lg-06 col-md-06 col-sm-12 lig" id="BitcoinMenu">
+      <span style="display: block; padding: 1vh 5vw 1vh 5vw;" id="stockType">Stock</span>
+      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Coin: </span><select style="width: 15vw;"><option>A</option></select></span>
+      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Amount: </span><input id="stockAmount" style="width: 15vw"></input></span>
       <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button>Add</button></span>
     </div>
     <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
   </div>
+
+
+</form>
 
 <div class="tabcontent" id="Total">
   <div class="row" id="graph">
@@ -68,17 +73,16 @@
       <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Bitcoin</span>
       <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="bitcoinAmountSpan"></span>
       <span style="clear: both; display: block; ">
-      	<table style="background-color: grey">
+      	<table style="background-color: grey" id="bitcoinTable">
       		<tr>
-      			<td>Coin 1</td>
-      			<td>Info</td>
+      			<td>Bitcoin</td>
+      			<td>500</td>
       		</tr>
       		<tr>
-      			<td>Coin 2</td>
-      			<td>Info</td>
+      			<td>Ethereum</td>
+      			<td>1000</td>
       		</tr>
       	</table>
-		<button style="width: 20%; ">+</button>
       </span>
     </div>
     <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
@@ -94,15 +98,14 @@
       <span style="clear: both; display: block; ">
       	<table style="background-color: grey">
       		<tr>
-      			<td>Stock 1</td>
-      			<td>Info</td>
+      			<td>Apple</td>
+      			<td>750</td>
       		</tr>
       		<tr>
-      			<td>Stock 2</td>
-      			<td>Info</td>
+      			<td>Google</td>
+      			<td>1500</td>
       		</tr>
       	</table>
-		<button style="width: 20%; ">+</button>
       </span>
     </div>
     <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>

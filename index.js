@@ -196,3 +196,9 @@ function openCurrency(evt, CurrencyName) {
     document.getElementById(CurrencyName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+
+function loadEdit(){
+  document.getElementById("bitcoinAmount").value = portfolio.bitcoin
+  document.getElementById("stockAmount").value = portfolio.appleStock
+
+}
