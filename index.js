@@ -4,7 +4,9 @@ let portfolio = {
   "usd": 35,
   "studentDebt": 20000,
   "bitcoin": 1.4,
+  "ethereum": 0.7,
   "appleStock": 2,
+  "googleStock": 4,
   "historical": [
     5000,
     5100,
@@ -198,7 +200,10 @@ function openCurrency(evt, CurrencyName) {
 }
 
 function loadEdit(){
-  document.getElementById("bitcoinAmount").value = portfolio.bitcoin
-  document.getElementById("stockAmount").value = portfolio.appleStock
-
+  document.getElementById("ethereumCryptoAmount").value = portfolio.ethereum
+  document.getElementById("bitcoinCryptoAmount").value = portfolio.bitcoin
+  document.getElementById("appleStockAmount").value = portfolio.appleStock
+  document.getElementById("googleStockAmount").value = portfolio.googleStock
+  document.getElementById("cashAmount").value = portfolio.usd
+  document.getElementById("loanAmount").value = portfolio.studentDebt
 }
