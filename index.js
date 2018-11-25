@@ -1,12 +1,32 @@
+// This portfolio object contains all the info needed to render a users portfolio
+// investedTotal is the amount they paid for assets - when a user adds a crypto
+// asset or stock this amount is updated. It's used to calculate a gain or loss for the
+// entire portfolio. We dont track gains or losses for individual assets at this point
+// If a user decreases (sells) an asset they have to update their usd themselves
+// The current value of the portfolio is calculated with the amount of a certain
+// asset in the portfolio * the price which comes from the API calls
+// Finally the historical array is an array of total portfolio values calculated
+// daily (we simulate a daily calculation) at this point 11/24/18
+
+// We could make a function which gets the end of day portfolio value and
+// and then pushes it to the historical array
+// And then if edits were made to holdings we could edit the last value of the historical
+// array to get a current portfolio value
+
+// We also need to make an onClick action for the student debt card which maps
+// over the historical array and decreases all values by the student debt ammount
+// Then it rerenders the graph and updates the total current portfolio value
+// It should also change the color of the graphs background
+
 let portfolio = {
   "name": "Sparky",
-  "invested": 20035.00,
+  "investedTotal": 4035,
   "usd": 35,
   "studentDebt": 20000,
-  "bitcoin": 1.4,
-  "ethereum": 0.7,
-  "appleStock": 2,
-  "googleStock": 4,
+  "bitcoinAmount": 1.4,
+  "ethereumAmount": 14,
+  "appleStockAmount": 2,
+  "googleStockAmount": 4,
   "historical": [
     5000,
     5100,
@@ -17,44 +37,50 @@ let portfolio = {
     5800,
     6000,
     6500,
-    9000,
-    10000
+    8500,
+    7000
   ],
-  getStockTotal: function() {
-    let stockAmount = this.applestock;
-    let stockPrice;
-    let totalStock;
-    let tickers = "AAPL"
-    console.log(stockAmount);
-    let request = new XMLHttpRequest();
-    request.open('GET', 'https://www.worldtradingdata.com/api/v1/stock_search?search_term=AAPL&search_by=symbol,name&limit=50&page=1&api_token=y5bn89U9AxqH2xXQebsJS1BNmLMoyCBcaEC2KalzdCKxtK8pabCP0On3d97Y', true);
-    request.onload = function () {
-      let data = JSON.parse(this.response);
-      console.log(data);
-      console.log(data[0].price);
-      stockPrice = data[0].price;
-      document.querySelector('#stockAmountSpan').innerHTML = `$ ${Math.round(stockPrice)}`;
-    };
-    request.send();
-  },
-  getBitcoinTotal: function() {
-    let bitcoinAmount = this.bitcoin;
-    let bitcoinPrice;
-    let totalBitcoin;
-    console.log(bitcoinAmount);
-    let request = new XMLHttpRequest();
-    request.open('GET', 'https://api.coinmarketcap.com/v1/ticker/bitcoin/?convert=USD', true);
-    request.onload = function () {
-      let data = JSON.parse(this.response);
-      console.log(data);
-      console.log(data[0].price_usd);
-      bitcoinPrice = data[0].price_usd;
-      document.querySelector('#bitcoinAmountSpan').innerHTML = `$ ${Math.round(bitcoinPrice)}`;
-    };
-    request.send();
-  },
+}
+// Global variables used for calculating curernt value
+// set via API calls in init() method
+let bitcoinPrice;
+let ethereumPrice;
+let appleStockPrice;
+let googleStockPrice;
+let currentPortfolioValue;
+
+const fetchCryptoPrice = async (coinName) => {
+  const url = `https://api.coinmarketcap.com/v1/ticker/${coinName}/?convert=USD`;
+  const response = await fetch(url);
+  const json = await response.json();
+  //console.log(json);
+  const cryptoPrice = json[0].price_usd;
+  //console.log(cryptoPrice + 'inside fetchCryptoPrice()');
+  return cryptoPrice;
 }
 
+const fetchStockPrice = async (symbol) => {
+  const url = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
+  const response = await fetch(url);
+  const json = await response.json();
+  console.log(json);
+  const stockPrice = json;
+  //console.log(cryptoPrice + 'inside fetchStockPrice()');
+  return stockPrice;
+}
+
+// This function pushes a new portfolio total to the historical array
+const pushNewPortfolioTotal = () => {
+  const ethAmount = ethereumPrice * portfolio.ethereumAmount;
+  const btcAmount = bitcoinPrice * portfolio.bitcoinAmount;
+  const appleAmount = appleStockPrice * portfolio.appleStockAmount;
+  const googleAmount = googleStockPrice * portfolio.googleStockAmount;
+  const cashAmount = portfolio.usd;
+  const total = Math.round(ethAmount + btcAmount + appleAmount + googleAmount + cashAmount);
+  console.log(`${total} pushNewPortfolioTotal`);
+  // pushed to historical array here
+  portfolio.historical.push(total);
+}
 
 const renderMainApp = (portfolio) => {
   // Writes heading text with total portfolio value
@@ -64,25 +90,17 @@ const renderMainApp = (portfolio) => {
   // Start of sparkline code
   // create an SVG element inside the #graph div that fills 100% of the div
   var graph = d3.select("#sparkline").append("svg:svg").attr("width", "100%").attr("height", "100%");
-
-  // create a simple data array that we'll plot with a line (this array represents only the Y values, X will just be the index location)
-  // var data = [3, 6, 2, 7, 5, 2, 1, 3, 8, 9, 2, 5, 9, 3, 6, 3, 6, 2, 7, 5, 2, 1, 3, 8, 9, 2, 5, 9, 2, 7, 5, 2, 1, 3, 8, 9, 2, 5, 9, 3, 6, 2, 7, 5, 2, 1, 3, 8, 9, 2, 5, 9];
-
   var data = portfolio.historical;
-  let max = data.reduce((max, n) => n > max ? n : max);
+  let max = data.reduce((max, n) => n > max ? n : max); // gets the max from historical
   let screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 
-  console.log(data);
-  console.log(max);
-
-  // X scale will fit values from 0-10 within pixels 0-100
+  // X scale will fit values from 0-portfolio.historical.length within pixels 0- screenWidth
   var x = d3.scaleLinear().domain([0, portfolio.historical.length]).range([0, screenWidth]);
-  // Y scale will fit values from 0-10 within pixels 0-100
-  var y = d3.scaleLinear().domain([0, max]).range([100, 0]);
-
-  // create a line object that represents the SVN line we're creating
+  // Y scale will fit values from 0-max in array within pixels 0-120
+  var y = d3.scaleLinear().domain([0, max]).range([120, 0]);
+  // create a line object that represents the SVG line
   var line = d3.line()
-    // assign the X function to plot our line as we wish
+    // assign the X function to plot line
     .x(function (d, i) {
       // verbose logging to show what's actually being done
       //console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
@@ -95,15 +113,21 @@ const renderMainApp = (portfolio) => {
       // return the Y coordinate where we want to plot this datapoint
       return y(d);
     })
-
+    .curve(d3.curveNatural)
+  // Listed below are differnt line types that can be tried: 
+  // var interpolateTypes = [d3.curveLinear,d3.curveStepBefore,d3.curveStepAfter,d3.curveBasis,// d3.curveBasisOpen, d3.curveBasisClosed, d3.curveBundle,d3.curveCardinal,d3.curveCardinal,// d3.curveCardinalOpen,d3.curveCardinalClosed,d3.curveNatural];
   // display the line by appending an svg:path element with the data line we created above
   graph.append("svg:path").attr("d", line(data));
 
-  // Render the cards
+  // Render the portfolio amounts on the cards
   renderCashAmount(portfolio);
   renderBitcoinAmount(portfolio);
+  renderEthereumAmount(portfolio);
+  renderAppleStockAmount(portfolio);
+  renderGoogleStockAmount(portfolio);
+  renderCryptoTotalAmount(portfolio);
   renderStudentLoanAmount(portfolio);
-  renderStockAmount(portfolio);
+  renderStockTotalAmount(portfolio);
 }
 
 const renderCashAmount = (portfolio) => {
@@ -111,35 +135,104 @@ const renderCashAmount = (portfolio) => {
 }
 
 const renderBitcoinAmount = (portfolio) => {
-  let bitcoinTotal = portfolio.getBitcoinTotal();
-  document.querySelector('#bitcoinAmountSpan').innerHTML = `$${bitcoinTotal}`;
+  document.querySelector('#bitcoinAmountSpan').innerHTML = 
+    `$ ${Math.round(bitcoinPrice * portfolio.bitcoinAmount)}`;
 }
 
-const renderStockAmount = (portfolio) => {
-  let stockTotal = portfolio.getStockTotal();
-  document.querySelector('#StockAmountSpan').innerHTML = `$${stockTotal}`;
+const renderEthereumAmount = (portfolio) => {
+  document.querySelector('#ethereumAmountSpan').innerHTML =
+    `$ ${Math.round(ethereumPrice * portfolio.ethereumAmount)}`;
+}
+
+const renderCryptoTotalAmount = (portfolio) => {
+  const ethAmount = ethereumPrice * portfolio.ethereumAmount;
+  const btcAmount = bitcoinPrice * portfolio.bitcoinAmount;
+  document.querySelector('#cryptoTotalAmountSpan').innerHTML =
+    `$ ${Math.round(ethAmount + btcAmount)}`;
+}
+
+const renderAppleStockAmount = (portfolio) => {
+  document.querySelector('#appleStockAmountSpan').innerHTML =
+    `$ ${Math.round(appleStockPrice * portfolio.appleStockAmount)}`;
+
+  console.log(portfolio.appleStockAmount * appleStockPrice);
+}
+
+const renderGoogleStockAmount = (portfolio) => {
+  document.querySelector('#googleStockAmountSpan').innerHTML =
+    `$ ${Math.round(googleStockPrice * portfolio.googleStockAmount)}`;
+
+  console.log(portfolio.googleStockAmount * googleStockPrice);
+}
+
+const renderStockTotalAmount = (portfolio) => {
+  const appleAmount = appleStockPrice * portfolio.appleStockAmount;
+  const googleAmount = googleStockPrice * portfolio.googleStockAmount;
+  document.querySelector('#stockTotalAmountSpan').innerHTML =
+    `$ ${Math.round(appleAmount + googleAmount)}`;
 }
 
 const renderStudentLoanAmount = (portfolio) => {
   document.querySelector('#studentLoanSpan').innerHTML = `$${portfolio.studentDebt.toLocaleString()}`;
 }
 
+// add event listeners below
+
+// Init onLoad and async init() function
+// awaits api calls
 document.body.addEventListener('load', init(), false);
-function init() {
+async function init() {
+  bitcoinPrice = await fetchCryptoPrice('bitcoin');
+  console.log(bitcoinPrice);
+  ethereumPrice = await fetchCryptoPrice('ethereum');
+  console.log(ethereumPrice);
+  appleStockPrice = await fetchStockPrice('aapl');
+  console.log(appleStockPrice);
+  googleStockPrice = await fetchStockPrice('googl');
+  console.log(appleStockPrice);
+  pushNewPortfolioTotal(); // push the total to historical array
   renderMainApp(portfolio);
 }
 
 document.querySelector('#cashCard').addEventListener('click', function (e) {
-  // To prevent it reloading
   e.preventDefault();
-  document.querySelector('#sparkline').innerHTML = renderCashForm(portfolio);
 
+  document.querySelector('#sparkline').innerHTML = renderCashForm(portfolio);
 });
 
-const clearScreen = () => {
-  document.body.innerHTML = '';
+function openCurrency(evt, CurrencyName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(CurrencyName).style.display = "block";
+    evt.currentTarget.className += " active";
 }
 
+function loadEdit(){
+  document.getElementById("ethereumCryptoAmount").value = portfolio.ethereumAmount;
+  document.getElementById("bitcoinCryptoAmount").value = portfolio.bitcoinAmount;
+  document.getElementById("appleStockAmount").value = portfolio.appleStockAmount;
+  document.getElementById("googleStockAmount").value = portfolio.googleStockAmount;
+  document.getElementById("cashAmount").value = portfolio.usd;
+  document.getElementById("loanAmount").value = portfolio.studentDebt;
+}
+
+// const clearScreen = () => {
+//   document.body.innerHTML = '';
+// }
 
 // const unhide = (clickedButton, divID) => {
 //   var item = document.getElementById(divID);
@@ -176,34 +269,3 @@ const clearScreen = () => {
 //     // start scrolling
 //     scroll(scrollContainer, scrollContainer.scrollTop, targetY, 0);
 // }
-
-
-function openCurrency(evt, CurrencyName) {
-    // Declare all variables
-    var i, tabcontent, tablinks;
-
-    // Get all elements with class="tabcontent" and hide them
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-
-    // Get all elements with class="tablinks" and remove the class "active"
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-
-    // Show the current tab, and add an "active" class to the button that opened the tab
-    document.getElementById(CurrencyName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
-
-function loadEdit(){
-  document.getElementById("ethereumCryptoAmount").value = portfolio.ethereum
-  document.getElementById("bitcoinCryptoAmount").value = portfolio.bitcoin
-  document.getElementById("appleStockAmount").value = portfolio.appleStock
-  document.getElementById("googleStockAmount").value = portfolio.googleStock
-  document.getElementById("cashAmount").value = portfolio.usd
-  document.getElementById("loanAmount").value = portfolio.studentDebt
-}

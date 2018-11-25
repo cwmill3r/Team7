@@ -12,140 +12,185 @@
 
 
 <body>
-  <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
+  <div class="col-lg-03 col-md-00 col-sm-00 wht">
+    <div>&nbsp;</div>
+  </div>
   <div class="tab">
-    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Total')" id="defaultOpen">  Total</button>
-    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Edit'); loadEdit();">  Edit</button>
-    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Watching')">  Watching</button>
+    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Total')" id="defaultOpen">
+      Portfolio</button>
+    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Edit'); loadEdit();"> Edit</button>
+    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Watching')"> Watching</button>
   </div>
-
-
-
-<form id="Edit" class="tabcontent">
-
-
-  <div class="row" style="display: block; ">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig">
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left;">Crypto</span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Bitcoin: </span><input id="bitcoinCryptoAmount" style="width: 15vw"></input></span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Ethereum: </span><input id="ethereumCryptoAmount" style="width: 15vw"></input></span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button onclick="#">Add</button></span>
-    </div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-
-  <div class="row" style="display: block; ">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig">
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left" >Stock</span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Apple: </span><input id="appleStockAmount" style="width: 15vw"></input></span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Google: </span><input id="googleStockAmount" style="width: 15vw"></input></span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button onclick="#">Add</button></span>
-    </div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-
-  <div class="row" style="display: block; ">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig">
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left" >Cash</span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Cash: </span><input id="cashAmount" style="width: 15vw"></input></span>
-    </div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-
-  <div class="row" style="display: block; ">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig">
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left" >Student Loan</span>
-      <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Loan: </span><input id="loanAmount" style="width: 15vw"></input></span>
-    </div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-
-<button type="submit" value="Submit" style="margin-left: ">Submit</button>
-
-</form>
-
-<div class="tabcontent" id="Total">
-  <div class="row" id="graph">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-    <div class="col-lg-06 col-md-06 col-sm-12 tea" id="sparkline"></div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig" id="cashCard">
-      <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Cash</span>
-      <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="cashAmountSpan"></span>
-    </div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-
-  <div class="row" id="BitcoinInfo">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht">
-      <div>&nbsp;</div>
-    </div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig" id="bitcoinCard">
-      <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Bitcoin</span>
-      <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="bitcoinAmountSpan"></span>
-      <span style="clear: both; display: block; ">
-      	<table style="background-color: grey" id="bitcoinTable">
-      		<tr>
-      			<td>Bitcoin</td>
-      			<td>500</td>
-      		</tr>
-      		<tr>
-      			<td>Ethereum</td>
-      			<td>1000</td>
-      		</tr>
-      	</table>
-      </span>
-    </div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-
-  <div class="row" id="StockInfo">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht">
-      <div>&nbsp;</div>
-    </div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig" id="stockCard">
-      <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Stock</span>
-      <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="stockAmountSpan"></span>
-      <span style="clear: both; display: block; ">
-      	<table style="background-color: grey">
-      		<tr>
-      			<td>Apple</td>
-      			<td>750</td>
-      		</tr>
-      		<tr>
-      			<td>Google</td>
-      			<td>1500</td>
-      		</tr>
-      	</table>
-      </span>
-    </div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-
-  <div class="row" id="LoanInfo">
-    <div class="col-lg-03 col-md-00 col-sm-00 wht">
-      <div>&nbsp;</div>
-    </div>
-    <div class="col-lg-06 col-md-06 col-sm-12 lig" id="studentLoanCard">
-      <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Student Loan</span>
-      <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="studentLoanSpan"></span>
-    </div>
-    <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-  </div>
-</div>
   
+  <form id="Edit" class="tabcontent">
+  
+    <div class="row" style="display: block; ">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig">
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left;">Crypto</span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Bitcoin: </span><input id="bitcoinCryptoAmount"
+            style="width: 15vw"></input></span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Ethereum: </span><input id="ethereumCryptoAmount"
+            style="width: 15vw"></input></span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button onclick="#">Add</button></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  
+    <div class="row" style="display: block; ">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig">
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Stock</span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Apple: </span><input id="appleStockAmount" style="width: 15vw"></input></span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Google: </span><input id="googleStockAmount" style="width: 15vw"></input></span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button onclick="#">Add</button></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  
+    <div class="row" style="display: block; ">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig">
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Cash</span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Cash: </span><input id="cashAmount" style="width: 15vw"></input></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  
+    <div class="row" style="display: block; ">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig">
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Student Loan</span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Loan: </span><input id="loanAmount" style="width: 15vw"></input></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  
+    <button type="submit" value="Submit" style="margin-left: ">Submit</button>
+  
+  </form>
+  
+  <div class="tabcontent" id="Total">
+    <div class="row" id="graph">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 tea" id="sparkline"></div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" id="cashCard">
+        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Cash</span>
+        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="cashAmountSpan"></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  
+    <div class="row" id="BitcoinInfo">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" id="bitcoinCard">
+        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Crypto</span>
+        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="cryptoTotalAmountSpan"></span>
+        <span style="clear: both; display: block; ">
+          <table style="background-color: grey; border-radius: 0 0 10px 10px">
+            <tr>
+              <td>
+                <span style="float: left; padding: 0 5vw 0 10vw;">Bitcoin</span>
+              </td>
+              <td>
+                <span style="float: right; padding: 0 5vw 0 5vw; color:slateblue;" id="bitcoinAmountSpan"></span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span style="float: left; padding: 0 5vw 0 10vw;">Ethereum</span>
+              </td>
+              <td>
+                <span style="float: right; padding: 0 5vw 1vh 5vw; color:slateblue;" id="ethereumAmountSpan"></span>
+              </td>
+            </tr>
+          </table>
+        </span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  
+    <div class="row" id="StockInfo">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" id="stockCard">
+        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Stock</span>
+        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="stockTotalAmountSpan"></span>
+        <span style="clear: both; display: block;">
+          <table style="background-color: grey; border-radius: 0 0 10px 10px">
+            <tr>
+              <td>
+                <span style="float: left; padding: 0 5vw 0 10vw;">Apple</span>
+              </td>
+              <td>
+                <span style="float: right; padding: 0 5vw 0 5vw; color:slateblue;" id="appleStockAmountSpan"></span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span style="float: left; padding: 0 5vw 0 10vw;">Google</span>
+              </td>
+              <td>
+                <span style="float: right; padding: 0 5vw 1vh 5vw; color:slateblue;" id="googleStockAmountSpan"></span>
+              </td>
+            </tr>
+          </table>
+        </span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+  
+    <div class="row" id="LoanInfo">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" id="studentLoanCard">
+        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Student Loan</span>
+        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="studentLoanSpan"></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
+    </div>
+  </div>
+
   <script src="./index.js"></script>
   <script type="text/javascript">
-  	document.getElementById("defaultOpen").click();
+    document.getElementById("defaultOpen").click();
   </script>
+
 </body>
 
 </html>
