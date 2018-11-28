@@ -39,8 +39,20 @@ let portfolio = {
     6500,
     8500,
     7000
-  ],
+  ]
 }
+
+
+
+let assetPortfolio = [
+{"assetName" : "Cash" , "symbol" : "" ,"amount" : 35 , "crypto" : false},
+{"assetName" : "Bitcoin" , "symbol" : "btc" ,"amount" : 1.4 , "crypto" : true},
+{"assetName" : "Ethereum" , "symbol" : "eth" ,"amount" : 14 , "crypto" : true},
+{"assetName" : "Apple" , "symbol" : "aapl" ,"amount" : 2 , "crypto" : false},
+{"assetName" : "Google" , "symbol" : "googl" ,"amount" : 4 , "crypto" : false}
+]
+
+
 // Global variables used for calculating curernt value
 // set via API calls in init() method
 let bitcoinPrice;
@@ -228,6 +240,24 @@ function loadEdit(){
   document.getElementById("googleStockAmount").value = portfolio.googleStockAmount;
   document.getElementById("cashAmount").value = portfolio.usd;
   document.getElementById("loanAmount").value = portfolio.studentDebt;
+}
+
+function setPortfolioValues(){
+  // console.log(document.getElementsByClassName('cryptoTypes')[0].childNodes[0].innerHTML);
+  assetPortfolio[0].amount.value = document.getElementById('cashAmount');
+  assetPortfolio[1].amount.value = document.getElementById('bitcoinCryptoAmount');
+  assetPortfolio[2].amount.value = document.getElementById('ethereumCryptoAmount');
+  assetPortfolio[3].amount.value = document.getElementById('appleStockAmount');
+  assetPortfolio[4].amount.value = document.getElementById('googleStockAmount');
+  
+}
+
+function addCrypto(){
+  document.getElementById("cryptoDiv").innerHTML = document.getElementById("cryptoDiv").innerHTML + '<span class="cryptoTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="cryptoAmounts" style="width: 15vw"></input> </span><input class="cryptoAmounts" style="width: 15vw"></input></span>'
+}
+
+function addStock(){
+  document.getElementById("stockDiv").innerHTML = document.getElementById("stockDiv").innerHTML + '<span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="stockAmounts" style="width: 15vw"></input> </span><input class="stockAmounts" style="width: 15vw"></input></span>'
 }
 
 // const clearScreen = () => {

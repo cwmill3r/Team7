@@ -22,19 +22,34 @@
     <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Watching')"> Watching</button>
   </div>
   
-  <form id="Edit" class="tabcontent">
+  <form id="Edit" class="tabcontent" onsubmit="setPortfolioValues()">
   
+	<div class="row" style="display: block; ">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig">
+        <span class="cashTypes" style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Cash</span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Cash: </span><input class="cashAmounts" id="cashAmount" style="width: 15vw"></input></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+
     <div class="row" style="display: block; ">
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
       </div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig">
         <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left;">Crypto</span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Bitcoin: </span><input id="bitcoinCryptoAmount"
+        <div id="cryptoDiv">
+        <span class="cryptoTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Bitcoin: </span><input class="cryptoAmounts" id="bitcoinCryptoAmount"
             style="width: 15vw"></input></span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Ethereum: </span><input id="ethereumCryptoAmount"
+        <span class="cryptoTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Ethereum: </span><input class="cryptoAmounts" id="ethereumCryptoAmount"
             style="width: 15vw"></input></span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button onclick="#">Add</button></span>
+        </div>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button type="button" onclick="addCrypto();">Add</button></span>
       </div>
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
@@ -46,10 +61,12 @@
         <div>&nbsp;</div>
       </div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig">
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Stock</span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Apple: </span><input id="appleStockAmount" style="width: 15vw"></input></span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Google: </span><input id="googleStockAmount" style="width: 15vw"></input></span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button onclick="#">Add</button></span>
+        <span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Stock</span>
+        <div id="stockDiv">
+        <span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Apple: </span><input class="stockAmounts" id="appleStockAmount" style="width: 15vw"></input></span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Google: </span><input class="stockAmounts" id="googleStockAmount" style="width: 15vw"></input></span>
+        </div>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button type="button" onclick="addStock();">Add</button></span>
       </div>
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
@@ -61,28 +78,15 @@
         <div>&nbsp;</div>
       </div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig">
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Cash</span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Cash: </span><input id="cashAmount" style="width: 15vw"></input></span>
+        <span class="loanTypes" style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Student Loan</span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Loan: </span><input class="loanAmounts" id="loanAmount" style="width: 15vw"></input></span>
       </div>
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
       </div>
     </div>
   
-    <div class="row" style="display: block; ">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
-      <div class="col-lg-06 col-md-06 col-sm-12 lig">
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Student Loan</span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Loan: </span><input id="loanAmount" style="width: 15vw"></input></span>
-      </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
-    </div>
-  
-    <button type="submit" value="Submit" style="margin-left: ">Submit</button>
+    <button type="button" value="Submit" onclick="setPortfolioValues();">Submit</button>
   
   </form>
   
