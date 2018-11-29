@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!-- ======================================================================= -->
+<!-- config.xml: Place this file inside the www directory                    -->
+<!-- Template version: 11-18                                                -->
+<!-- ======================================================================= -->
+
+    <!-- =================================================================== -->
+    <!-- Change 'id' below: edu.asu.cis430.SEMESTER-YEAR.ASURITE.APPNAME     -->
+    <!-- Change 'version' below to suit your needs                           -->
+    <!-- =================================================================== -->
+
+<widget 
+    id          = "edu.asu.cis430.fall18.cwmiller.team7"  
+    version     = "1.0.0" 
+    xmlns       = "http://www.w3.org/ns/widgets" 
+    xmlns:gap   = "http://phonegap.com/ns/1.0">
+
+    <!-- =================================================================== -->
+    <!-- Change 'name', 'description', and 'author' tags below               -->
+    <!-- =================================================================== -->
+
+    <name>team7</name>
+
+    <description>
+        Team 7 Final Project
+    </description>
+
+    <author email="cwmiller@asu.edu" href="http://www.asu.edu">
+        Chris Miller, Henry Alfred, Tanner Millyard, Richard Lee
+    </author>
+
+    <content src="index.html" />  <!-- the starting point of your hybrid app -->
+
+    <!-- =================================================================== -->
+    <!-- Plugins are libraries that extend the base functionality of the     -->
+    <!-- HTML/CSS/JS model to include device specific features of mobile     -->
+    <!-- see https://build.phonegap.com/plugins                              -->
+    <!--                                                                     -->
+    <!-- add any additional plugins below                                    -->
+    <!-- =================================================================== -->
+
+    <plugin name="cordova-plugin-statusbar"                     spec="2.3.0" />
+    <plugin name="cordova-plugin-whitelist"                     spec="1.2.2" />
+
+    <!-- =================================================================== -->
+    <!-- Preferences: configure defaults for your hybrid app                 -->
+    <!--                                                                     -->
+    <!-- for example:                                                        -->
+    <!-- Orientation: values: landscape, portrait, or default (allow both)   -->
+    <!-- DisallowOverscroll: have the webview not "bounce" when touched      -->
+    <!-- android-minSdkVersion:  set minimum threshhold of OS versions       -->
+    <!--   14 = Android 4.0.1 (Ice Cream Sandwich)                           -->
+    <!--   for more see https://source.android.com/source/build-numbers.html -->
+    <!-- more preferences are available at                                   -->
+    <!-- at http://cordova.apache.org/docs/en/latest/config_ref/             -->
+    <!-- =================================================================== -->
+    <preference name = "Orientation"           value = "portrait"   />
+    <preference name = "DisallowOverscroll"    value = "true"      />
+    <preference name = "android-minSdkVersion" value = "14"        />
+    <preference name = "phonegap-version"      value = "cli-6.5.0" />
+    
+    <!-- =================================================================== -->
+    <!-- These are for the cordova-plugin-statusbar plugin                   -->
+    <!-- =================================================================== -->
+        <preference name="StatusBarOverlaysWebView" value="false"        />
+        <preference name="StatusBarBackgroundColor" value="#000000"      /> 
+        <preference name="StatusBarStyle"           value="lightcontent" />  
+
+    <!-- =================================================================== -->
+    <!-- access: allows network access to specific domains                   -->
+    <!-- allow-navigation: allows network access to specific domains         -->
+    <!-- NOTE BY DEFAULT FOR DEVELOPEMENT ONLY, WE ALL ANY ACCESS TO ANY SITE-->
+    <!-- with access origin="*"                                              -->
+    <!-- this is NOT a best practice for development where you lock down     -->
+    <!-- permitted domains - for more details and examples, see              -->
+    <!-- http://cordova.apache.org/docs/en/latest/guide/appdev/whitelist/    -->
+    <!-- =================================================================== -->
+    <access             origin="*"  />
+    <allow-navigation   href="*"    />
+
+    <!-- =================================================================== -->
+    <!-- allow-intents: if the user selects the url, allow the               -->
+    <!-- system (mobile os) to honor the users intent and open it            -->
+    <!-- =================================================================== -->
+    <allow-intent href="http://*/*"      />   <!-- open browser          -->
+    <allow-intent href="https://*/*"     />   <!-- open browser          -->
+    <allow-intent href="tel:*"           />   <!-- dial phone #          -->
+    <allow-intent href="sms:*"           />   <!-- send a text           -->
+    <allow-intent href="mailto:*"        />   <!-- open mail to          -->
+    <allow-intent href="geo:*"           />   <!-- open maps             -->
+  
+    <platform name="android">  
+        <allow-intent href="market:*"    />   <!-- open google playstore -->
+    </platform>  
+      
+    <platform name="ios">  
+        <allow-intent href="itms:*"      />   <!-- open app store        -->
+        <allow-intent href="itms-apps:*" />
+    </platform>
+</widget>
