@@ -190,11 +190,12 @@ const renderStudentLoanAmount = (portfolio) => {
 // add event listeners below
 
 /* wait until all phonegap/cordova is loaded then call onDeviceReady*/
-document.addEventListener("deviceready", onDeviceReady, false);
+document.addEventListener("deviceready", onDeviceReady(), false);
 function onDeviceReady() {
   init();
+  console.log('onDeviceReady worked');
 }
-// Below is the onLoad function I was calling before converting to phonegap
+//Below is the onLoad function I was calling before converting to phonegap
 // document.body.addEventListener('load', init(), false);
 
 async function init() {
