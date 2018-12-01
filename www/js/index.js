@@ -1,3 +1,4 @@
+"use strict";
 // This portfolio object contains all the info needed to render a users portfolio
 // investedTotal is the amount they paid for assets - when a user adds a crypto
 // asset or stock this amount is updated. It's used to calculate a gain or loss for the
@@ -18,15 +19,48 @@
 // Then it rerenders the graph and updates the total current portfolio value
 // It should also change the color of the graphs background
 
+// let portfolio = {
+//   "name": "Sparky",
+//   "investedTotal": 4035,
+//   "usd": 35,
+//   "studentDebt": 20000,
+//   "bitcoinAmount": 1.4,
+//   "ethereumAmount": 14,
+//   "appleStockAmount": 2,
+//   "googleStockAmount": 4,
+//   "historical": [
+//     5000,
+//     5100,
+//     4800,
+//     3400,
+//     5200,
+//     5100,
+//     5800,
+//     6000,
+//     6500,
+//     8500,
+//     7000
+//   ]
+// }
+// let assetPortfolio = [
+// {"assetName" : "Bitcoin" , "symbol" : "btc" ,"amount" : 1.4 , "crypto" : true},
+// {"assetName" : "Ethereum" , "symbol" : "eth" ,"amount" : 14 , "crypto" : true},
+// {"assetName" : "Apple" , "symbol" : "aapl" ,"amount" : 2 , "crypto" : false},
+// {"assetName" : "Google" , "symbol" : "googl" ,"amount" : 4 , "crypto" : false}
+// ];
+
 let portfolio = {
   "name": "Sparky",
-  "investedTotal": 4035,
+  "investedTotal": 5035,
+  "currentPortfolioValue": undefined,
   "usd": 35,
   "studentDebt": 20000,
-  "bitcoinAmount": 1.4,
-  "ethereumAmount": 14,
-  "appleStockAmount": 2,
-  "googleStockAmount": 4,
+  "assets": [
+    { "assetName": "Bitcoin", "symbol": "btc", "amount": 1.4, "currentPrice": undefined, "crypto": true },
+    { "assetName": "Ethereum", "symbol": "eth", "amount": 14, "currentPrice": undefined, "crypto": true },
+    { "assetName": "Apple", "symbol": "aapl", "amount": 2, "currentPrice": undefined, "crypto": false },
+    { "assetName": "Google", "symbol": "googl", "amount": 4, "currentPrice": undefined, "crypto": false }
+  ],
   "historical": [
     5000,
     5100,
@@ -39,65 +73,75 @@ let portfolio = {
     6500,
     8500,
     7000
-  ]
+  ],
+  fetchCryptoPrice: async function(coinName) {
+    const url = `https://api.coinmarketcap.com/v1/ticker/${coinName}/?convert=USD`;
+    const response = await fetch(url);
+    const json = await response.json();
+    //console.log(json);
+    const cryptoPrice = json[0].price_usd;
+    //console.log(cryptoPrice + 'inside fetchCryptoPrice()');
+    return cryptoPrice;
+  },
+  fetchStockPrice: async function(symbol) {
+    const url = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
+    const response = await fetch(url);
+    const json = await response.json();
+    //console.log(json);
+    const stockPrice = json;
+    //console.log(cryptoPrice + 'inside fetchStockPrice()');
+    return stockPrice;
+  },
+  setCurrentPrices: function() {
+    // sets current price for crypto assets
+    const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
+    cryptoAssets.map(function (crypto) {
+      crypto.currentPrice = portfolio.fetchCryptoPrice(crypto.assetName);
+    });
+    // sets current price for stock assets
+    const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
+    stockAssets.map(function(stock) {
+      stock.currentPrice = portfolio.fetchStockPrice(stock.symbol);
+    });
+  },
+  setCurrentPortfolioValue: function() {
+
+  },
 }
-
-
-
-let assetPortfolio = [
-{"assetName" : "Bitcoin" , "symbol" : "btc" ,"amount" : 1.4 , "crypto" : true},
-{"assetName" : "Ethereum" , "symbol" : "eth" ,"amount" : 14 , "crypto" : true},
-{"assetName" : "Apple" , "symbol" : "aapl" ,"amount" : 2 , "crypto" : false},
-{"assetName" : "Google" , "symbol" : "googl" ,"amount" : 4 , "crypto" : false}
-];
-
 
 // Global variables used for calculating curernt value
-// set via API calls in init() method
-let bitcoinPrice;
-let ethereumPrice;
-let appleStockPrice;
-let googleStockPrice;
+// set via API calls
 let currentPortfolioValue;
 
-const fetchCryptoPrice = async (coinName) => {
-  const url = `https://api.coinmarketcap.com/v1/ticker/${coinName}/?convert=USD`;
-  const response = await fetch(url);
-  const json = await response.json();
-  //console.log(json);
-  const cryptoPrice = json[0].price_usd;
-  //console.log(cryptoPrice + 'inside fetchCryptoPrice()');
-  return cryptoPrice;
-}
-
-const fetchStockPrice = async (symbol) => {
-  const url = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
-  const response = await fetch(url);
-  const json = await response.json();
-  console.log(json);
-  const stockPrice = json;
-  //console.log(cryptoPrice + 'inside fetchStockPrice()');
-  return stockPrice;
-}
-
 // This function pushes a new portfolio total to the historical array
-const pushNewPortfolioTotal = () => {
-  const ethAmount = ethereumPrice * portfolio.ethereumAmount;
-  const btcAmount = bitcoinPrice * portfolio.bitcoinAmount;
-  const appleAmount = appleStockPrice * portfolio.appleStockAmount;
-  const googleAmount = googleStockPrice * portfolio.googleStockAmount;
-  const cashAmount = portfolio.usd;
-  const total = Math.round(ethAmount + btcAmount + appleAmount + googleAmount + cashAmount);
-  console.log(`${total} pushNewPortfolioTotal`);
-  // pushed to historical array here
-  portfolio.historical.push(total);
+const pushNewPortfolioTotal = (portfolio) => {
+  // const ethAmount = ethereumPrice * portfolio.ethereumAmount;
+  // const btcAmount = bitcoinPrice * portfolio.bitcoinAmount;
+  // const appleAmount = appleStockPrice * portfolio.appleStockAmount;
+  // const googleAmount = googleStockPrice * portfolio.googleStockAmount;
+  // const cashAmount = portfolio.usd;
+  // const total = Math.round(ethAmount + btcAmount + appleAmount + googleAmount + cashAmount);
+  // console.log(`${total} pushNewPortfolioTotal`);
+  // // pushed to historical array here
+  // portfolio.historical.push(total);
+  console.log('fix pushNewPortfolioTotal');
 }
 
 const renderMainApp = (portfolio) => {
+  renderHeading(portfolio);
+  renderGraph(portfolio);
+  renderCashCard(portfolio);
+  renderStudentLoanCard(portfolio);
+  renderCryptoCard(portfolio);
+  renderStockCard(portfolio);
+}
+
+const renderHeading = (portfolio) => {
   // Writes heading text with total portfolio value
   let headingText = `<h3>${portfolio.name}</h3>` + `<p>$${portfolio.historical[portfolio.historical.length - 1].toLocaleString()}</p>`;
   document.querySelector('#sparkline').innerHTML = headingText;
-
+}
+const renderGraph = (portfolio) => {
   // Start of sparkline code
   // create an SVG element inside the #graph div that fills 100% of the div
   var graph = d3.select("#sparkline").append("svg:svg").attr("width", "100%").attr("height", "100%");
@@ -129,61 +173,70 @@ const renderMainApp = (portfolio) => {
   // var interpolateTypes = [d3.curveLinear,d3.curveStepBefore,d3.curveStepAfter,d3.curveBasis,// d3.curveBasisOpen, d3.curveBasisClosed, d3.curveBundle,d3.curveCardinal,d3.curveCardinal,// d3.curveCardinalOpen,d3.curveCardinalClosed,d3.curveNatural];
   // display the line by appending an svg:path element with the data line we created above
   graph.append("svg:path").attr("d", line(data));
-
-  // Render the portfolio amounts on the cards
-  renderCashAmount(portfolio);
-  renderBitcoinAmount(portfolio);
-  renderEthereumAmount(portfolio);
-  renderAppleStockAmount(portfolio);
-  renderGoogleStockAmount(portfolio);
-  renderCryptoTotalAmount(portfolio);
-  renderStudentLoanAmount(portfolio);
-  renderStockTotalAmount(portfolio);
 }
 
-const renderCashAmount = (portfolio) => {
+const renderCryptoCard = (portfolio) => {
+  // Renders a name and total for each row of the portfolio
+  portfolio.setCurrentPrices(); // fetches fresh prices
+  console.log(portfolio);
+  const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
+  cryptoAssets.map(async function (x) {
+    const currentPrice = await x.currentPrice;
+    // Renders Crypto Table
+    document.querySelector('#cryptoTable').innerHTML +=
+      `<tr>
+            <td>
+              <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
+            </td>
+            <td>
+              <span style="float: right; padding: 0 5vw 0 5vw; color:slateblue;">${Math.round(currentPrice * x.amount)}</span>
+            </td>
+        </tr>`
+  });
+
+  // calculate the crypto total
+
+  // // calculate the crypto total
+  // const totalCrypto = cryptoAssets.reduce(async function(x) {
+  //   const currentPrice = await x.currentPrice;
+  //   return x.amount * currentPrice;
+  // });
+
+  // async function renderCryptoTotal() {
+  //   const totalCryptoRender = await totalCrypto;
+  //   console.log(totalCryptoRender);
+  //   document.querySelector('#cryptoTotalAmountSpan').innerHTML = Math.round(totalCryptoRender);
+  // }
+  // renderCryptoTotal();
+
+}
+
+const renderStockCard = (portfolio) => {
+  portfolio.setCurrentPrices(portfolio); // fetches fresh prices
+  const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
+  console.log(stockAssets);
+  stockAssets.map(async function (x) {
+    const currentPrice = await x.currentPrice;
+    console.log(x.currentPrice);
+    //<span style="float: left; padding: 0 5vw 0 10vw;">${x.assetName} (${x.amount})
+    document.querySelector('#stockTable').innerHTML +=
+      `<tr>
+            <td>
+              <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
+            </td>
+            <td>
+              <span style="float: right; padding: 0 5vw 0 5vw; color:slateblue;">${Math.round(currentPrice * x.amount)}</span>
+            </td>
+        </tr>`
+  });
+  // render the total for Stock Assets  
+}
+
+const renderCashCard = (portfolio) => {
   document.querySelector('#cashAmountSpan').innerHTML = `$${portfolio.usd.toLocaleString()}`;
 }
 
-const renderBitcoinAmount = (portfolio) => {
-  document.querySelector('#bitcoinAmountSpan').innerHTML = 
-    `$ ${Math.round(bitcoinPrice * portfolio.bitcoinAmount)}`;
-}
-
-const renderEthereumAmount = (portfolio) => {
-  document.querySelector('#ethereumAmountSpan').innerHTML =
-    `$ ${Math.round(ethereumPrice * portfolio.ethereumAmount)}`;
-}
-
-const renderCryptoTotalAmount = (portfolio) => {
-  const ethAmount = ethereumPrice * portfolio.ethereumAmount;
-  const btcAmount = bitcoinPrice * portfolio.bitcoinAmount;
-  document.querySelector('#cryptoTotalAmountSpan').innerHTML =
-    `$ ${Math.round(ethAmount + btcAmount)}`;
-}
-
-const renderAppleStockAmount = (portfolio) => {
-  document.querySelector('#appleStockAmountSpan').innerHTML =
-    `$ ${Math.round(appleStockPrice * portfolio.appleStockAmount)}`;
-
-  console.log(portfolio.appleStockAmount * appleStockPrice);
-}
-
-const renderGoogleStockAmount = (portfolio) => {
-  document.querySelector('#googleStockAmountSpan').innerHTML =
-    `$ ${Math.round(googleStockPrice * portfolio.googleStockAmount)}`;
-
-  console.log(portfolio.googleStockAmount * googleStockPrice);
-}
-
-const renderStockTotalAmount = (portfolio) => {
-  const appleAmount = appleStockPrice * portfolio.appleStockAmount;
-  const googleAmount = googleStockPrice * portfolio.googleStockAmount;
-  document.querySelector('#stockTotalAmountSpan').innerHTML =
-    `$ ${Math.round(appleAmount + googleAmount)}`;
-}
-
-const renderStudentLoanAmount = (portfolio) => {
+const renderStudentLoanCard = (portfolio) => {
   document.querySelector('#studentLoanSpan').innerHTML = `$${portfolio.studentDebt.toLocaleString()}`;
 }
 
@@ -197,25 +250,10 @@ function onDeviceReady() {
 }
 //Below is the onLoad function I was calling before converting to phonegap
 // document.body.addEventListener('load', init(), false);
-
 async function init() {
-  bitcoinPrice = await fetchCryptoPrice('bitcoin');
-  console.log(bitcoinPrice);
-  ethereumPrice = await fetchCryptoPrice('ethereum');
-  console.log(ethereumPrice);
-  appleStockPrice = await fetchStockPrice('aapl');
-  console.log(appleStockPrice);
-  googleStockPrice = await fetchStockPrice('googl');
-  console.log(appleStockPrice);
   pushNewPortfolioTotal(); // push the total to historical array
   renderMainApp(portfolio);
 }
-
-document.querySelector('#cashCard').addEventListener('click', function (e) {
-  e.preventDefault();
-
-  document.querySelector('#sparkline').innerHTML = renderCashForm(portfolio);
-});
 
 function openCurrency(evt, CurrencyName) {
     // Declare all variables

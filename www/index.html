@@ -28,6 +28,7 @@
   
   <form id="Edit" class="tabcontent" onsubmit="setPortfolioValues()">
   
+  <!-- Edit to make all fit on one row later -->
 	<div class="row" style="display: block; ">
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
@@ -41,6 +42,7 @@
       </div>
     </div>
 
+    <!-- Edit - CryptoCard -->
     <div class="row" style="display: block; ">
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
@@ -59,7 +61,8 @@
         <div>&nbsp;</div>
       </div>
     </div>
-  
+    
+    <!-- Edit - StockCard -->
     <div class="row" style="display: block; ">
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
@@ -96,38 +99,29 @@
   
   <div class="tabcontent" id="Total">
     <div class="row" id="graph">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
       <div class="col-lg-06 col-md-06 col-sm-12 tea" id="sparkline"></div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
     </div>
   
+    <!-- Portfolio CashCard -->
     <div class="row">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="cashCard">
         <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Cash</span>
         <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="cashAmountSpan"></span>
       </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
     </div>
   
     <div class="row" id="BitcoinInfo">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="bitcoinCard">
         <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Crypto</span>
         <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="cryptoTotalAmountSpan"></span>
         <span style="clear: both; display: block; ">
-          <table style="background-color: grey; border-radius: 0 0 10px 10px">
-            <tr>
+          <table id="cryptoTable" style="background-color: grey; border-radius: 0 0 10px 10px">
+            <!-- <tr>
               <td>
                 <span style="float: left; padding: 0 5vw 0 10vw;">Bitcoin</span>
               </td>
@@ -142,25 +136,21 @@
               <td>
                 <span style="float: right; padding: 0 5vw 1vh 5vw; color:slateblue;" id="ethereumAmountSpan"></span>
               </td>
-            </tr>
+            </tr> -->
           </table>
         </span>
       </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
     </div>
   
     <div class="row" id="StockInfo">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="stockCard">
         <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Stock</span>
         <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="stockTotalAmountSpan"></span>
         <span style="clear: both; display: block;">
-          <table style="background-color: grey; border-radius: 0 0 10px 10px">
-            <tr>
+          <table id="stockTable" style="background-color: grey; border-radius: 0 0 10px 10px">
+            <!-- <tr>
               <td>
                 <span style="float: left; padding: 0 5vw 0 10vw;">Apple</span>
               </td>
@@ -175,7 +165,7 @@
               <td>
                 <span style="float: right; padding: 0 5vw 1vh 5vw; color:slateblue;" id="googleStockAmountSpan"></span>
               </td>
-            </tr>
+            </tr> -->
           </table>
         </span>
       </div>

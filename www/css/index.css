@@ -78,6 +78,15 @@ path {
   height: 30vh;
 }
 
+.cryptoAmounts {
+  width: 13vw;
+}
+
+.cryptoTypes {
+  display: block;
+  padding: 1vh 3vw 1vh 3vw;
+}
+
 /* For phones (portrait) unless another @media rule below is fired */
 @media only screen and (max-width: 499px) {
   .col-sm-00  {display: 		   none; }
