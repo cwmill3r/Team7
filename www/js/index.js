@@ -53,6 +53,10 @@ let demoPortfolio = {
     10000,
     12000,
   ],
+  "watching":[
+  {"name":"Apple","abbreviation":"aapl","crypto":false}
+  ],
+
 };
 
 // Either the demo portfolio or the portfolio from localStorage.portfolio becomes
@@ -367,6 +371,7 @@ async function init() {
     portfolio = localStorage.portfolio;
     renderMainApp(portfolio);
   }
+  fillWatching();
 }
 
 document.querySelector('#editTabButton').addEventListener('click', function (e) {
@@ -473,6 +478,7 @@ try{
     var json = await response.json();
     //console.log(json);
     price = json;
+    portfolio.watching.push({name:name,abbreviation:abbr,crypto:false})
   }
   if (document.getElementById("cryptoRadio").checked){
     type = 'crypto';
@@ -481,6 +487,7 @@ try{
     var json = await response.json();
     //console.log(json);
     price = json[0].price_usd;
+    portfolio.watching.push({name:name,abbreviation:abbr,crypto:true})
   }
   
   if(price != null){
@@ -498,6 +505,11 @@ try{
 catch(err){
       alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
 }
+console.log(portfolio.watching)
+}
+
+function fillWatching(){
+  
 }
 
 // const clearScreen = () => {
