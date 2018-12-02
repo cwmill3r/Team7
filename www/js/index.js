@@ -54,7 +54,8 @@ let demoPortfolio = {
     12000,
   ],
   "watching":[
-  {"name":"Apple","abbreviation":"aapl","crypto":false}
+  {"name":"Apple","abbreviation":"aapl","crypto":false},
+  {"name":"Bitcoin","abbreviation":"btc","crypto":true}
   ],
 
 };
@@ -467,11 +468,29 @@ function openCurrency(evt, CurrencyName) {
 
 
 
-async function addWatching(name,abbr){
+async function addWatching(name,abbr,crypto = false,pass = false){
   var type = 'Addition'
   var price = null
+  console.log(pass)
+  console.log(crypto)
 try{
-  if (document.getElementById("stockRadio").checked) {
+  if (pass == true && crypto == true){
+    type = 'crypto';
+    var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
+    var response = await fetch(url);
+    var json = await response.json();
+    //console.log(json);
+    price = json[0].price_usd;
+  }
+  if (pass == true && crypto == false){
+    type = 'stock';
+    var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
+    var response =  await fetch(url);
+    var json = await response.json();
+    //console.log(json);
+    price = json;
+  }
+  if (document.getElementById("stockRadio").checked && pass == false) {
     type = 'stock';
     var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
     var response =  await fetch(url);
@@ -480,7 +499,7 @@ try{
     price = json;
     portfolio.watching.push({name:name,abbreviation:abbr,crypto:false})
   }
-  if (document.getElementById("cryptoRadio").checked){
+  if (document.getElementById("cryptoRadio").checked && pass == false){
     type = 'crypto';
     var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
     var response = await fetch(url);
@@ -509,7 +528,9 @@ console.log(portfolio.watching)
 }
 
 function fillWatching(){
-  
+  for(i = 0; i < portfolio.watching.length; i++){
+    addWatching(portfolio.watching[i].name,portfolio.watching[i].abbreviation,portfolio.watching[i].crypto,true)
+  }
 }
 
 // const clearScreen = () => {
