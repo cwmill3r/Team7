@@ -427,19 +427,42 @@ function openCurrency(evt, CurrencyName) {
 
 
 
-function addWatching(abbr){
-if (document.getElementById("stockRadio").checked) {
-  var type = 'stock';
+async function addWatching(name,abbr){
+  var type = 'Addition'
+  var price = null
+try{
+  if (document.getElementById("stockRadio").checked) {
+    type = 'stock';
+    var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
+    var response =  await fetch(url);
+    var json = await response.json();
+    //console.log(json);
+    price = json;
+  }
+  if (document.getElementById("cryptoRadio").checked){
+    type = 'crypto';
+    var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
+    var response = await fetch(url);
+    var json = await response.json();
+    //console.log(json);
+    price = json[0].price_usd;
+  }
+  
+  if(price != null){
+  var mytable = document.getElementById("watchingTable");
+  var row = mytable.insertRow(0);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  cell1.innerHTML = abbr
+  cell2.innerHTML = price
+  }
+  else{
+    alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
+  }
 }
-if (document.getElementById("cryptoRadio").checked){
-  var type = 'crypto';
-  var url = `https://api.coinmarketcap.com/v1/ticker/${abbr}/?convert=USD`;
-  var response =  fetch(url);
-  var json =  response.json();
-  var price = json[0].price_usd;
+catch(err){
+      alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
 }
-
-document.getElementById("watchingCardId").innerHTML += `<span style="display: block; padding: 1vh 5vw 1vh 5vw;">${abbr} : ${price}</span>`
 }
 
 // const clearScreen = () => {
