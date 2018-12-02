@@ -226,6 +226,8 @@ const renderCryptoCard = (portfolio) => {
   // * See renderMainApp() function
   // current prices and properties of portfolio are already set and refreshed
   // Renders a name and total for each row of the portfolio
+  document.querySelector('#cryptoTotalAmountSpan').innerHTML = "";
+  document.querySelector('#cryptoTable').innerHTML = "";
   document.querySelector('#cryptoTotalAmountSpan').innerHTML = '$' + Math.round(portfolio.currentCryptoValue);
   const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
   cryptoAssets.map(async function (x) {
@@ -244,6 +246,8 @@ const renderCryptoCard = (portfolio) => {
 }
 
 const renderStockCard = (portfolio) => {
+  document.querySelector('#stockTotalAmountSpan').innerHTML = "";
+  document.querySelector('#stockTable').innerHTML = "";
   // * See renderMainApp() function
   // current prices and properties of portfolio are already set and refreshed
   // Renders a name and total for each row of the portfolio
@@ -267,10 +271,12 @@ const renderStockCard = (portfolio) => {
 }
 
 const renderCashCard = (portfolio) => {
+  document.querySelector('#cashAmountSpan').innerHTML = "";
   document.querySelector('#cashAmountSpan').innerHTML = `$${portfolio.usd.toLocaleString()}`;
 }
 
 const renderStudentLoanCard = (portfolio) => {
+  document.querySelector('#studentLoanSpan').innerHTML = "";
   document.querySelector('#studentLoanSpan').innerHTML = `$${portfolio.studentDebt.toLocaleString()}`;
 }
 
@@ -291,7 +297,7 @@ const renderEditCryptoCard = (portfolio) => {
               <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
             </td>
             <td>
-              <input id="${x.assetName}"class="editTextBox" value="${x.amount}"></input>     
+              <input id="${x.assetName}" class="editTextBox" value="${x.amount}"></input>     
             </td>
        </tr>`
   });
@@ -316,18 +322,20 @@ const renderEditStockCard = (portfolio) => {
               <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
             </td>
             <td>
-              <input class="editTextBox" value="${x.amount}"style="float: right"></input>
+              <input id="${x.assetName}" class="editTextBox" value="${x.amount}"style="float: right"></input>
             </td>
         </tr>`
   });
 }
 
 const renderEditCashCard = (portfolio) => {
-  document.querySelector('#editCashAmountSpan').innerHTML = `<input class="editTextBox" value="${portfolio.usd}"style="float: right"></input>`;
+  document.querySelector('#editCashAmountSpan').innerHTML = "";
+  document.querySelector('#editCashAmountSpan').innerHTML = `<input id="usd" class="editTextBox" value="${portfolio.usd}"style="float: right"></input>`;
 }
 
 const renderEditStudentLoanCard = (portfolio) => {
-  document.querySelector('#editStudentLoanSpan').innerHTML = `<input class="editTextBox" value="${portfolio.usd}"style="float: right"></input>`;
+  document.querySelector('#editStudentLoanSpan').innerHTML = "";
+  document.querySelector('#editStudentLoanSpan').innerHTML = `<input id="studentLoan"class="editTextBox" value="${portfolio.studentDebt}"style="float: right"></input>`;
 }
 
 
@@ -374,7 +382,34 @@ document.querySelector('#editSubmitButton').addEventListener('click', function (
   // To prevent it reloading
   e.preventDefault();
   // need to read all the values and match them to values in the portfolio object.
-})
+  var els = document.getElementsByClassName("editTextBox");
+
+  // This loops through the textboxes and then uses their value to change the
+  // portfolio object
+  Array.prototype.forEach.call(els, function (el) {
+    
+    portfolio.assets.forEach(function(asset) {
+      if (el.id === asset.assetName) {
+        asset.amount = el.value;
+      } else if (el.id === "usd") {
+        portfolio.usd = el.value;
+      } else if(el.id == "studentLoan") {
+        portfolio.studentDebt = el.value;
+      };
+    });
+  });
+
+  console.log(portfolio);
+  // call renderMainApp at the end so the graphs and everything chang
+  //document.getElementById("Edit").submit();
+  renderMainApp(portfolio);
+});
+
+// document.querySelector('#defaultOpen').addEventListener('click', function (e) {
+//   // To prevent it reloading
+//   e.preventDefault();
+//   renderMainApp(portfolio);
+// });
 
 function openCurrency(evt, CurrencyName) {
     // Declare all variables
