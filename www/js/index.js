@@ -17,42 +17,14 @@
 // We also need to make an onClick action for the student debt card which maps
 // over the historical array and decreases all values by the student debt ammount
 // Then it rerenders the graph and updates the total current portfolio value
-// It should also change the color of the graphs background
-
-// let portfolio = {
-//   "name": "Sparky",
-//   "investedTotal": 4035,
-//   "usd": 35,
-//   "studentDebt": 20000,
-//   "bitcoinAmount": 1.4,
-//   "ethereumAmount": 14,
-//   "appleStockAmount": 2,
-//   "googleStockAmount": 4,
-//   "historical": [
-//     5000,
-//     5100,
-//     4800,
-//     3400,
-//     5200,
-//     5100,
-//     5800,
-//     6000,
-//     6500,
-//     8500,
-//     7000
-//   ]
-// }
-// let assetPortfolio = [
-// {"assetName" : "Bitcoin" , "symbol" : "btc" ,"amount" : 1.4 , "crypto" : true},
-// {"assetName" : "Ethereum" , "symbol" : "eth" ,"amount" : 14 , "crypto" : true},
-// {"assetName" : "Apple" , "symbol" : "aapl" ,"amount" : 2 , "crypto" : false},
-// {"assetName" : "Google" , "symbol" : "googl" ,"amount" : 4 , "crypto" : false}
-// ];
+// It should also change the color of the graph's background
 
 let portfolio = {
   "name": "Sparky",
   "investedTotal": 5035,
   "currentPortfolioValue": undefined,
+  "currentCryptoValue": undefined,
+  "currentStockValue": undefined,
   "usd": 35,
   "studentDebt": 20000,
   "assets": [
@@ -62,17 +34,21 @@ let portfolio = {
     { "assetName": "Google", "symbol": "googl", "amount": 4, "currentPrice": undefined, "crypto": false }
   ],
   "historical": [
-    5000,
-    5100,
-    4800,
-    3400,
-    5200,
-    5100,
-    5800,
     6000,
-    6500,
+    6100,
+    5800,
+    4400,
+    6200,
+    6100,
+    6800,
+    7000,
+    7500,
+    9500,
+    10000,
     8500,
-    7000
+    9000,
+    10000,
+    12000,
   ],
   fetchCryptoPrice: async function(coinName) {
     const url = `https://api.coinmarketcap.com/v1/ticker/${coinName}/?convert=USD`;
@@ -104,43 +80,68 @@ let portfolio = {
       stock.currentPrice = portfolio.fetchStockPrice(stock.symbol);
     });
   },
-  setCurrentPortfolioValue: function() {
-
+  // This is basically a total of the whole portfolio using current prices
+  setCurrentPortfolioValue: async function() {
+    const assetCurrentValuesArr = this.assets.map(async function(asset) {
+      const currentPrice = await asset.currentPrice;
+      return asset.amount * currentPrice;
+    });
+    let stockCryptoValue = 0;
+    for(let i = 0; i < assetCurrentValuesArr.length; i++){
+      stockCryptoValue += await assetCurrentValuesArr[i];
+    };
+    this.currentPortfolioValue = stockCryptoValue + this.usd;
+    this.historical[this.historical.length -1] = this.currentPortfolioValue;
+  },
+  setCryptoCurrentValue: async function() {
+    const cryptoCurrentValue = this.assets.filter(asset => asset.crypto)
+    .map(async function(asset) {
+      const currentPrice = await asset.currentPrice;
+      return asset.amount * currentPrice;
+    });
+    let cryptoValue = 0;
+    for (let i = 0; i < cryptoCurrentValue.length; i++) {
+      cryptoValue += await cryptoCurrentValue[i];
+    };
+    this.currentCryptoValue = cryptoValue;
+  },
+  setStockCurrentValue: async function() {
+    const stockCurrentValue = this.assets.filter(asset => !asset.crypto)
+      .map(async function (asset) {
+        const currentPrice = await asset.currentPrice;
+        return asset.amount * currentPrice;
+      });
+    let stockValue = 0;
+    for (let i = 0; i < stockCurrentValue.length; i++) {
+      stockValue += await stockCurrentValue[i];
+    };
+    this.currentStockValue = stockValue;
   },
 }
 
-// Global variables used for calculating curernt value
-// set via API calls
-let currentPortfolioValue;
+async function renderMainApp (portfolio) {
+  // Call portfolio objects functions to get all the values set & refreshed
+  portfolio.setCurrentPrices();
+  portfolio.setCryptoCurrentValue();
+  portfolio.setStockCurrentValue();
+  await portfolio.setCurrentPortfolioValue();
+  console.log(portfolio);
 
-// This function pushes a new portfolio total to the historical array
-const pushNewPortfolioTotal = (portfolio) => {
-  // const ethAmount = ethereumPrice * portfolio.ethereumAmount;
-  // const btcAmount = bitcoinPrice * portfolio.bitcoinAmount;
-  // const appleAmount = appleStockPrice * portfolio.appleStockAmount;
-  // const googleAmount = googleStockPrice * portfolio.googleStockAmount;
-  // const cashAmount = portfolio.usd;
-  // const total = Math.round(ethAmount + btcAmount + appleAmount + googleAmount + cashAmount);
-  // console.log(`${total} pushNewPortfolioTotal`);
-  // // pushed to historical array here
-  // portfolio.historical.push(total);
-  console.log('fix pushNewPortfolioTotal');
-}
-
-const renderMainApp = (portfolio) => {
+  // Render the app
   renderHeading(portfolio);
   renderGraph(portfolio);
   renderCashCard(portfolio);
   renderStudentLoanCard(portfolio);
-  renderCryptoCard(portfolio);
-  renderStockCard(portfolio);
+  renderCryptoCard(portfolio); // fetches current prices within function
+  renderStockCard(portfolio); // fetches current prices within function
 }
 
 const renderHeading = (portfolio) => {
   // Writes heading text with total portfolio value
-  let headingText = `<h3>${portfolio.name}</h3>` + `<p>$${portfolio.historical[portfolio.historical.length - 1].toLocaleString()}</p>`;
+  let headingText = `<h3>${portfolio.name}</h3>` + `<p>$${Math.round(portfolio.historical[portfolio.historical.length - 1]).toLocaleString()}</p>`;
   document.querySelector('#sparkline').innerHTML = headingText;
 }
+
 const renderGraph = (portfolio) => {
   // Start of sparkline code
   // create an SVG element inside the #graph div that fills 100% of the div
@@ -176,9 +177,10 @@ const renderGraph = (portfolio) => {
 }
 
 const renderCryptoCard = (portfolio) => {
+  // * See renderMainApp() function
+  // current prices and properties of portfolio are already set and refreshed
   // Renders a name and total for each row of the portfolio
-  portfolio.setCurrentPrices(); // fetches fresh prices
-  console.log(portfolio);
+  document.querySelector('#cryptoTotalAmountSpan').innerHTML = '$' + Math.round(portfolio.currentCryptoValue);
   const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
   cryptoAssets.map(async function (x) {
     const currentPrice = await x.currentPrice;
@@ -193,26 +195,13 @@ const renderCryptoCard = (portfolio) => {
             </td>
         </tr>`
   });
-
-  // calculate the crypto total
-
-  // // calculate the crypto total
-  // const totalCrypto = cryptoAssets.reduce(async function(x) {
-  //   const currentPrice = await x.currentPrice;
-  //   return x.amount * currentPrice;
-  // });
-
-  // async function renderCryptoTotal() {
-  //   const totalCryptoRender = await totalCrypto;
-  //   console.log(totalCryptoRender);
-  //   document.querySelector('#cryptoTotalAmountSpan').innerHTML = Math.round(totalCryptoRender);
-  // }
-  // renderCryptoTotal();
-
 }
 
 const renderStockCard = (portfolio) => {
-  portfolio.setCurrentPrices(portfolio); // fetches fresh prices
+  // * See renderMainApp() function
+  // current prices and properties of portfolio are already set and refreshed
+  // Renders a name and total for each row of the portfolio
+  document.querySelector('#stockTotalAmountSpan').innerHTML = '$' + Math.round(portfolio.currentStockValue);
   const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
   console.log(stockAssets);
   stockAssets.map(async function (x) {
@@ -229,7 +218,6 @@ const renderStockCard = (portfolio) => {
             </td>
         </tr>`
   });
-  // render the total for Stock Assets  
 }
 
 const renderCashCard = (portfolio) => {
@@ -251,7 +239,6 @@ function onDeviceReady() {
 //Below is the onLoad function I was calling before converting to phonegap
 // document.body.addEventListener('load', init(), false);
 async function init() {
-  pushNewPortfolioTotal(); // push the total to historical array
   renderMainApp(portfolio);
 }
 
@@ -275,7 +262,7 @@ function openCurrency(evt, CurrencyName) {
     document.getElementById(CurrencyName).style.display = "block";
     evt.currentTarget.className += " active";
 }
-
+// Render
 function loadEdit(){
   document.getElementById("ethereumCryptoAmount").value = portfolio.ethereumAmount;
   document.getElementById("bitcoinCryptoAmount").value = portfolio.bitcoinAmount;
