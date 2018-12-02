@@ -274,34 +274,72 @@ const renderStudentLoanCard = (portfolio) => {
   document.querySelector('#studentLoanSpan').innerHTML = `$${portfolio.studentDebt.toLocaleString()}`;
 }
 
+// EDIT TAB JAVASCRIPT
+const renderEditCryptoCard = (portfolio) => {
+  document.querySelector('#editCryptoTable').innerHTML = "";
+  // * See renderMainApp() function
+  // current prices and properties of portfolio are already set and refreshed
+  // Renders a name and total for each row of the portfolio
+  document.querySelector('#editCryptoTotalAmountSpan').innerHTML = '# Shares';
+  const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
+  cryptoAssets.map(async function (x) {
+    const currentPrice = await x.currentPrice;
+    // Renders Crypto Table
+    document.querySelector('#editCryptoTable').innerHTML +=
+      `<tr>
+            <td>
+              <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
+            </td>
+            <td>
+              <input id="${x.assetName}"class="editTextBox" value="${x.amount}"></input>     
+            </td>
+       </tr>`
+  });
+}
+
+const renderEditStockCard = (portfolio) => {
+  document.querySelector('#editStockTable').innerHTML = "";
+  // * See renderMainApp() function
+  // current prices and properties of portfolio are already set and refreshed
+  // Renders a name and total for each row of the portfolio
+  document.querySelector('#editStockTotalAmountSpan').innerHTML = '# Shares';
+  const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
+  console.log(stockAssets);
+  stockAssets.map(async function (x) {
+    const currentPrice = await x.currentPrice;
+    console.log(x.currentPrice);
+    //<span style="float: left; padding: 0 5vw 0 10vw;">${x.assetName} (${x.amount})
+    
+    document.querySelector('#editStockTable').innerHTML +=
+      `<tr>
+            <td>
+              <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
+            </td>
+            <td>
+              <input class="editTextBox" value="${x.amount}"style="float: right"></input>
+            </td>
+        </tr>`
+  });
+}
+
+const renderEditCashCard = (portfolio) => {
+  document.querySelector('#editCashAmountSpan').innerHTML = `<input class="editTextBox" value="${portfolio.usd}"style="float: right"></input>`;
+}
+
+const renderEditStudentLoanCard = (portfolio) => {
+  document.querySelector('#editStudentLoanSpan').innerHTML = `<input class="editTextBox" value="${portfolio.usd}"style="float: right"></input>`;
+}
+
+
+// END OF EDIT TAB CODE
+
+
 const saveToLocalStorage = (portfolio) => {
   if (localStorage.portfolio === null) {
     localStorage.portfolio = JSON.stringify(portfolio);
   };
 }
 
-// Render Edit screen stuff
-
-const renderEditCryptoCard = (portfolio) => {
-  // * See renderMainApp() function
-  // current prices and properties of portfolio are already set and refreshed
-  // Renders a name and total for each row of the portfolio
-  document.querySelector('#cryptoTotalAmountSpan').innerHTML = '$' + Math.round(portfolio.currentCryptoValue);
-  const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
-  cryptoAssets.map(async function (x) {
-    const currentPrice = await x.currentPrice;
-    // Renders Crypto Table
-    document.querySelector('#cryptoTable').innerHTML +=
-      `<tr>
-            <td>
-              <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
-            </td>
-            <td>
-              <span style="float: right; padding: 0 5vw 0 5vw; color:slateblue;">${Math.round(currentPrice * x.amount)}</span>
-            </td>
-       </tr>`
-  });
-}
 
 // add event listeners below
 
@@ -322,6 +360,21 @@ async function init() {
     renderMainApp(portfolio);
   }
 }
+
+document.querySelector('#editTabButton').addEventListener('click', function (e) {
+  // To prevent it reloading
+  e.preventDefault();
+  renderEditCashCard(portfolio);
+  renderEditCryptoCard(portfolio);
+  renderEditStockCard(portfolio);
+  renderEditStudentLoanCard(portfolio);
+})
+
+document.querySelector('#editSubmitButton').addEventListener('click', function (e) {
+  // To prevent it reloading
+  e.preventDefault();
+  // need to read all the values and match them to values in the portfolio object.
+})
 
 function openCurrency(evt, CurrencyName) {
     // Declare all variables
@@ -344,32 +397,33 @@ function openCurrency(evt, CurrencyName) {
     evt.currentTarget.className += " active";
 }
 
-function loadEdit(){
-  document.getElementById("ethereumCryptoAmount").value = portfolio.ethereumAmount;
-  document.getElementById("bitcoinCryptoAmount").value = portfolio.bitcoinAmount;
-  document.getElementById("appleStockAmount").value = portfolio.appleStockAmount;
-  document.getElementById("googleStockAmount").value = portfolio.googleStockAmount;
-  document.getElementById("cashAmount").value = portfolio.usd;
-  document.getElementById("loanAmount").value = portfolio.studentDebt;
-}
 
-function setPortfolioValues(){
-  // console.log(document.getElementsByClassName('cryptoTypes')[0].childNodes[0].innerHTML);
-  assetPortfolio[0].amount.value = document.getElementById('cashAmount');
-  assetPortfolio[1].amount.value = document.getElementById('bitcoinCryptoAmount');
-  assetPortfolio[2].amount.value = document.getElementById('ethereumCryptoAmount');
-  assetPortfolio[3].amount.value = document.getElementById('appleStockAmount');
-  assetPortfolio[4].amount.value = document.getElementById('googleStockAmount');
+// function loadEdit(){
+//   document.getElementById("ethereumCryptoAmount").value = portfolio.ethereumAmount;
+//   document.getElementById("bitcoinCryptoAmount").value = portfolio.bitcoinAmount;
+//   document.getElementById("appleStockAmount").value = portfolio.appleStockAmount;
+//   document.getElementById("googleStockAmount").value = portfolio.googleStockAmount;
+//   document.getElementById("cashAmount").value = portfolio.usd;
+//   document.getElementById("loanAmount").value = portfolio.studentDebt;
+// }
+
+// function setPortfolioValues(){
+//   // console.log(document.getElementsByClassName('cryptoTypes')[0].childNodes[0].innerHTML);
+//   assetPortfolio[0].amount.value = document.getElementById('cashAmount');
+//   assetPortfolio[1].amount.value = document.getElementById('bitcoinCryptoAmount');
+//   assetPortfolio[2].amount.value = document.getElementById('ethereumCryptoAmount');
+//   assetPortfolio[3].amount.value = document.getElementById('appleStockAmount');
+//   assetPortfolio[4].amount.value = document.getElementById('googleStockAmount');
   
-}
+// }
 
-function addCrypto(){
-  document.getElementById("cryptoDiv").innerHTML = document.getElementById("cryptoDiv").innerHTML + '<span class="cryptoTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="cryptoAmounts" style="width: 15vw"></input> </span><input class="cryptoAmounts" style="width: 15vw"></input></span>'
-}
+// function addCrypto(){
+//   document.getElementById("cryptoDiv").innerHTML = document.getElementById("cryptoDiv").innerHTML + '<span class="cryptoTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="cryptoAmounts" style="width: 15vw"></input> </span><input class="cryptoAmounts" style="width: 15vw"></input></span>'
+// }
 
-function addStock(){
-  document.getElementById("stockDiv").innerHTML = document.getElementById("stockDiv").innerHTML + '<span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="stockAmounts" style="width: 15vw"></input> </span><input class="stockAmounts" style="width: 15vw"></input></span>'
-}
+// function addStock(){
+//   document.getElementById("stockDiv").innerHTML = document.getElementById("stockDiv").innerHTML + '<span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="stockAmounts" style="width: 15vw"></input> </span><input class="stockAmounts" style="width: 15vw"></input></span>'
+// }
 
 
 

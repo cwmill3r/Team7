@@ -22,81 +22,83 @@
   <div class="tab">
     <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Total')" id="defaultOpen">
       Portfolio</button>
-    <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Edit'); loadEdit();"> Edit</button>
+    <button id="editTabButton" class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Edit');"> Edit</button>
     <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Watching')"> Watching</button>
   </div>
   
-  <form id="Edit" class="tabcontent" onsubmit="setPortfolioValues()">
-  
-  <!-- Edit to make all fit on one row later -->
-	<div class="row" style="display: block; ">
+  <!-- EDIT TAB -->
+  <form id="Edit" class="tabcontent">
+    <!-- Put it all here -->
+    <div class="row">
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
       </div>
-      <div class="col-lg-06 col-md-06 col-sm-12 lig">
-        <span class="cashTypes" style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Cash</span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Cash: </span><input class="cashAmounts" id="cashAmount" style="width: 15vw"></input></span>
-      </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
-    </div>
-
-    <!-- Edit - CryptoCard -->
-    <div class="row" style="display: block; ">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
-      <div class="col-lg-06 col-md-06 col-sm-12 lig">
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left;">Crypto</span>
-        <div id="cryptoDiv">
-        <!-- <span class="cryptoTypes" style="display: block; padding: 1vh 3vw 1vh 3vw;"><span>Bitcoin (BTC): </span><input class="cryptoAmounts" id="bitcoinCryptoAmount"
-            style="width: 13vw"></input></span>
-        <span class="cryptoTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Ethereum (ETH): </span><input class="cryptoAmounts" id="ethereumCryptoAmount"
-            style="width: 15vw"></input></span> -->
-        </div>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button type="button" onclick="addCrypto();">Add</button></span>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editCashCard">
+        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Cash</span>
+        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editCashAmountSpan"></span>
       </div>
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
       </div>
     </div>
     
-    <!-- Edit - StockCard -->
-    <div class="row" style="display: block; ">
+    <div class="row" id="BitcoinInfo">
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
       </div>
-      <div class="col-lg-06 col-md-06 col-sm-12 lig">
-        <span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Stock</span>
-        <div id="stockDiv">
-        <span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Apple (AAPL): </span><input class="stockAmounts" id="appleStockAmount" style="width: 15vw"></input></span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Google (GOOG): </span><input class="stockAmounts" id="googleStockAmount" style="width: 15vw"></input></span>
-        </div>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button type="button" onclick="addStock();">Add</button></span>
-      </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
-    </div>
-  
-    <div class="row" style="display: block; ">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
-      <div class="col-lg-06 col-md-06 col-sm-12 lig">
-        <span class="loanTypes" style="display: block; padding: 1vh 5vw 1vh 5vw; text-align: left">Student Loan</span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Loan: </span><input class="loanAmounts" id="loanAmount" style="width: 15vw"></input></span>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editBitcoinCard">
+        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Crypto</span>
+        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editCryptoTotalAmountSpan"></span>
+        <span style="clear: both; display: block; ">
+          <table id="editCryptoTable" style="background-color: grey; border-radius: 0 0 10px 10px">
+            <!-- Here is where the renderEditCryptoCard function outputs -->
+          </table>
+        </span>
       </div>
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
       </div>
     </div>
-  
-    <button type="button" value="Submit" onclick="setPortfolioValues();">Submit</button>
-  
+    
+    <div class="row" id="StockInfo">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editStockCard">
+        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Stock</span>
+        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editStockTotalAmountSpan"></span>
+        <span style="clear: both; display: block;">
+          <table id="editStockTable" style="background-color: grey; border-radius: 0 0 10px 10px">
+            <!-- Here is where the renderEditStockCard function outputs -->
+          </table>
+        </span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+    
+    <div class="row" id="LoanInfo">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editStudentLoanCard">
+        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Student Loan</span>
+        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editStudentLoanSpan"></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+    <button id="editSubmitButton" class="submitButton" type="button" value="Submit">Submit</button>
   </form>
   
+  <!-- End of edit -->
+
+
+
+
+
   <div class="tabcontent" id="Total">
     <div class="row" id="graph">
       <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>

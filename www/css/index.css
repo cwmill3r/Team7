@@ -87,6 +87,21 @@ path {
   padding: 1vh 3vw 1vh 3vw;
 }
 
+.editTextBox {
+  float: right;
+  max-width: 20vw;
+  background-color: #008080;
+  border: none;
+  border-radius: 10px;
+}
+
+.submitButton {
+  color: lightyellow;
+  width: 33vw;
+  background-color: lightslategray;
+  border-radius: 10px; 
+}
+
 /* For phones (portrait) unless another @media rule below is fired */
 @media only screen and (max-width: 499px) {
   .col-sm-00  {display: 		   none; }
