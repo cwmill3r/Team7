@@ -345,6 +345,23 @@ function addStock(){
   document.getElementById("stockDiv").innerHTML = document.getElementById("stockDiv").innerHTML + '<span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="stockAmounts" style="width: 15vw"></input> </span><input class="stockAmounts" style="width: 15vw"></input></span>'
 }
 
+
+
+function addWatching(abbr){
+if (document.getElementById("stockRadio").checked) {
+  var type = 'stock';
+}
+if (document.getElementById("cryptoRadio").checked){
+  var type = 'crypto';
+  var url = `https://api.coinmarketcap.com/v1/ticker/${abbr}/?convert=USD`;
+  var response =  fetch(url);
+  var json =  response.json();
+  var price = json[0].price_usd;
+}
+
+document.getElementById("watchingCardId").innerHTML += `<span style="display: block; padding: 1vh 5vw 1vh 5vw;">${abbr} : ${price}</span>`
+}
+
 // const clearScreen = () => {
 //   document.body.innerHTML = '';
 // }
