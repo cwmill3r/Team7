@@ -347,14 +347,20 @@ function addStock(){
 
 
 
-function addWatching(abbr){
+function addWatching(name,abbr){
 if (document.getElementById("stockRadio").checked) {
   var type = 'stock';
+  var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
+  var response =  fetch(url);
+  var json =  response.json();
+  //console.log(json);
+  var stockPrice = json;
 }
 if (document.getElementById("cryptoRadio").checked){
   var type = 'crypto';
-  var url = `https://api.coinmarketcap.com/v1/ticker/${abbr}/?convert=USD`;
+  var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
   var response =  fetch(url);
+  console.log(response)
   var json =  response.json();
   var price = json[0].price_usd;
 }
