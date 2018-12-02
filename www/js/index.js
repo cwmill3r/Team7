@@ -21,6 +21,7 @@
 // Then it rerenders the graph and updates the total current portfolio value
 // It should also change the color of the graph's background
 
+// If user has localStorage.portfolio === undefined then the demoPortfolio is loaded
 let demoPortfolio = {
   "name": "Sparky",
   "investedTotal": 9035,
@@ -54,6 +55,8 @@ let demoPortfolio = {
   ],
 };
 
+// Either the demo portfolio or the portfolio from localStorage.portfolio becomes
+// this portfolio which is used throughout the app 
 let portfolio = undefined;
 
 
@@ -236,7 +239,7 @@ const renderCryptoCard = (portfolio) => {
             <td>
               <span style="float: right; padding: 0 5vw 0 5vw; color:slateblue;">${Math.round(currentPrice * x.amount)}</span>
             </td>
-        </tr>`
+       </tr>`
   });
 }
 
@@ -273,8 +276,31 @@ const renderStudentLoanCard = (portfolio) => {
 
 const saveToLocalStorage = (portfolio) => {
   if (localStorage.portfolio === null) {
-    localStorage.portfolio = JSON.stringify(demoPortfolio);
+    localStorage.portfolio = JSON.stringify(portfolio);
   };
+}
+
+// Render Edit screen stuff
+
+const renderEditCryptoCard = (portfolio) => {
+  // * See renderMainApp() function
+  // current prices and properties of portfolio are already set and refreshed
+  // Renders a name and total for each row of the portfolio
+  document.querySelector('#cryptoTotalAmountSpan').innerHTML = '$' + Math.round(portfolio.currentCryptoValue);
+  const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
+  cryptoAssets.map(async function (x) {
+    const currentPrice = await x.currentPrice;
+    // Renders Crypto Table
+    document.querySelector('#cryptoTable').innerHTML +=
+      `<tr>
+            <td>
+              <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
+            </td>
+            <td>
+              <span style="float: right; padding: 0 5vw 0 5vw; color:slateblue;">${Math.round(currentPrice * x.amount)}</span>
+            </td>
+       </tr>`
+  });
 }
 
 // add event listeners below
