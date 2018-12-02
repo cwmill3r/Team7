@@ -1,4 +1,6 @@
-"use strict";
+// 'use strict';
+// Use strict doesnt allow stringified portfolio to be saved to local storage
+
 // This portfolio object contains all the info needed to render a users portfolio
 // investedTotal is the amount they paid for assets - when a user adds a crypto
 // asset or stock this amount is updated. It's used to calculate a gain or loss for the
@@ -19,9 +21,9 @@
 // Then it rerenders the graph and updates the total current portfolio value
 // It should also change the color of the graph's background
 
-let portfolio = {
+let demoPortfolio = {
   "name": "Sparky",
-  "investedTotal": 5035,
+  "investedTotal": 9035,
   "currentPortfolioValue": undefined,
   "currentCryptoValue": undefined,
   "currentStockValue": undefined,
@@ -50,83 +52,124 @@ let portfolio = {
     10000,
     12000,
   ],
-  fetchCryptoPrice: async function(coinName) {
-    const url = `https://api.coinmarketcap.com/v1/ticker/${coinName}/?convert=USD`;
-    const response = await fetch(url);
-    const json = await response.json();
-    //console.log(json);
-    const cryptoPrice = json[0].price_usd;
-    //console.log(cryptoPrice + 'inside fetchCryptoPrice()');
-    return cryptoPrice;
-  },
-  fetchStockPrice: async function(symbol) {
-    const url = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
-    const response = await fetch(url);
-    const json = await response.json();
-    //console.log(json);
-    const stockPrice = json;
-    //console.log(cryptoPrice + 'inside fetchStockPrice()');
-    return stockPrice;
-  },
-  setCurrentPrices: function() {
-    // sets current price for crypto assets
-    const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
-    cryptoAssets.map(function (crypto) {
-      crypto.currentPrice = portfolio.fetchCryptoPrice(crypto.assetName);
-    });
-    // sets current price for stock assets
-    const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
-    stockAssets.map(function(stock) {
-      stock.currentPrice = portfolio.fetchStockPrice(stock.symbol);
-    });
-  },
-  // This is basically a total of the whole portfolio using current prices
-  setCurrentPortfolioValue: async function() {
-    const assetCurrentValuesArr = this.assets.map(async function(asset) {
+};
+
+let portfolio = undefined;
+
+
+// function runQuery() {
+//   MySql.Execute(
+//     "sql.wpc-is.online",	// mySQL server
+//     "cwmiller", 				// login name
+//     "cwmi3301", 			// login password
+//     "db_test_cwmiller", 			// database to use
+//     // SQL query string:
+//     "SELECT 											\
+// 				portfolio 						\
+// 			 FROM 												\
+// 				users 							\
+// 			 WHERE 												\
+// 				id = 4  	\
+// 			 ;",
+//     function (data) {
+//       processQueryResult(data);
+//     }
+//   );
+// }
+
+// function processQueryResult(queryReturned) {
+//   if (!queryReturned.Success) {
+//     alert(queryReturned.Error);
+//   } else {
+//     console.log(JSON.stringify(queryReturned.Result), null, 2);
+//     //portfolio = JSON.parse(queryReturned.Result, null, 2);
+//   }
+// }
+
+async function fetchCryptoPrice(coinName) {
+  const url = `https://api.coinmarketcap.com/v1/ticker/${coinName}/?convert=USD`;
+  const response = await fetch(url);
+  const json = await response.json();
+  //console.log(json);
+  const cryptoPrice = json[0].price_usd;
+  //console.log(cryptoPrice + 'inside fetchCryptoPrice()');
+  return cryptoPrice;
+};
+
+async function fetchStockPrice(symbol) {
+  const url = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
+  const response = await fetch(url);
+  const json = await response.json();
+  //console.log(json);
+  const stockPrice = json;
+  //console.log(cryptoPrice + 'inside fetchStockPrice()');
+  return stockPrice;
+};
+
+const setCurrentPrices= () => {
+  // sets current price for crypto assets
+  const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
+  cryptoAssets.map(function (crypto) {
+    crypto.currentPrice = fetchCryptoPrice(crypto.assetName);
+  });
+  // sets current price for stock assets
+  const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
+  stockAssets.map(function (stock) {
+    stock.currentPrice = fetchStockPrice(stock.symbol);
+  });
+}
+
+// This is basically a total of the whole portfolio using current prices
+async function setCurrentPortfolioValue() {
+  const assetCurrentValuesArr = portfolio.assets.map(async function (asset) {
+    const currentPrice = await asset.currentPrice;
+    return asset.amount * currentPrice;
+  });
+  let stockCryptoValue = 0;
+  for (let i = 0; i < assetCurrentValuesArr.length; i++) {
+    stockCryptoValue += await assetCurrentValuesArr[i];
+  };
+  portfolio.currentPortfolioValue = stockCryptoValue + portfolio.usd;
+  portfolio.historical[portfolio.historical.length - 1] = portfolio.currentPortfolioValue;
+}
+
+// Subtotal for crypto with current prices
+async function setCryptoCurrentValue() {
+  const cryptoCurrentValue = portfolio.assets.filter(asset => asset.crypto)
+    .map(async function (asset) {
       const currentPrice = await asset.currentPrice;
       return asset.amount * currentPrice;
     });
-    let stockCryptoValue = 0;
-    for(let i = 0; i < assetCurrentValuesArr.length; i++){
-      stockCryptoValue += await assetCurrentValuesArr[i];
-    };
-    this.currentPortfolioValue = stockCryptoValue + this.usd;
-    this.historical[this.historical.length -1] = this.currentPortfolioValue;
-  },
-  setCryptoCurrentValue: async function() {
-    const cryptoCurrentValue = this.assets.filter(asset => asset.crypto)
-    .map(async function(asset) {
+  let cryptoValue = 0;
+  for (let i = 0; i < cryptoCurrentValue.length; i++) {
+    cryptoValue += await cryptoCurrentValue[i];
+  };
+  portfolio.currentCryptoValue = cryptoValue;
+}
+
+// Subtotal for stocks with current prices
+async function setStockCurrentValue() {
+  const stockCurrentValue = portfolio.assets.filter(asset => !asset.crypto)
+    .map(async function (asset) {
       const currentPrice = await asset.currentPrice;
       return asset.amount * currentPrice;
     });
-    let cryptoValue = 0;
-    for (let i = 0; i < cryptoCurrentValue.length; i++) {
-      cryptoValue += await cryptoCurrentValue[i];
-    };
-    this.currentCryptoValue = cryptoValue;
-  },
-  setStockCurrentValue: async function() {
-    const stockCurrentValue = this.assets.filter(asset => !asset.crypto)
-      .map(async function (asset) {
-        const currentPrice = await asset.currentPrice;
-        return asset.amount * currentPrice;
-      });
-    let stockValue = 0;
-    for (let i = 0; i < stockCurrentValue.length; i++) {
-      stockValue += await stockCurrentValue[i];
-    };
-    this.currentStockValue = stockValue;
-  },
+  let stockValue = 0;
+  for (let i = 0; i < stockCurrentValue.length; i++) {
+    stockValue += await stockCurrentValue[i];
+  };
+  portfolio.currentStockValue = stockValue;
 }
 
 async function renderMainApp (portfolio) {
   // Call portfolio objects functions to get all the values set & refreshed
-  portfolio.setCurrentPrices();
-  portfolio.setCryptoCurrentValue();
-  portfolio.setStockCurrentValue();
-  await portfolio.setCurrentPortfolioValue();
-  console.log(portfolio);
-
+  setCurrentPrices();
+  setCryptoCurrentValue();
+  setStockCurrentValue();
+  await setCurrentPortfolioValue();
+  // Save to Local Storage need to move this to the end of the app eventually. 
+  saveToLocalStorage(portfolio);
+  // console.log(JSON.parse(localStorage.portfolio));
   // Render the app
   renderHeading(portfolio);
   renderGraph(portfolio);
@@ -228,6 +271,12 @@ const renderStudentLoanCard = (portfolio) => {
   document.querySelector('#studentLoanSpan').innerHTML = `$${portfolio.studentDebt.toLocaleString()}`;
 }
 
+const saveToLocalStorage = (portfolio) => {
+  if (localStorage.portfolio === null) {
+    localStorage.portfolio = JSON.stringify(demoPortfolio);
+  };
+}
+
 // add event listeners below
 
 /* wait until all phonegap/cordova is loaded then call onDeviceReady*/
@@ -239,7 +288,13 @@ function onDeviceReady() {
 //Below is the onLoad function I was calling before converting to phonegap
 // document.body.addEventListener('load', init(), false);
 async function init() {
-  renderMainApp(portfolio);
+  if (localStorage.portfolio === undefined) {
+    portfolio = demoPortfolio;
+    renderMainApp(portfolio);
+  } else {
+    portfolio = localStorage.portfolio;
+    renderMainApp(portfolio);
+  }
 }
 
 function openCurrency(evt, CurrencyName) {
@@ -262,7 +317,7 @@ function openCurrency(evt, CurrencyName) {
     document.getElementById(CurrencyName).style.display = "block";
     evt.currentTarget.className += " active";
 }
-// Render
+
 function loadEdit(){
   document.getElementById("ethereumCryptoAmount").value = portfolio.ethereumAmount;
   document.getElementById("bitcoinCryptoAmount").value = portfolio.bitcoinAmount;
