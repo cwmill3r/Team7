@@ -54,7 +54,8 @@ let demoPortfolio = {
     12000,
   ],
   "watching":[
-  {"name":"Apple","abbreviation":"aapl","crypto":false}
+  {"name":"Apple","abbreviation":"aapl","crypto":false},
+  {"name":"Bitcoin","abbreviation":"btc","crypto":true}
   ],
 };
 
@@ -289,7 +290,7 @@ const renderEditCryptoCard = (portfolio) => {
   // * See renderMainApp() function
   // current prices and properties of portfolio are already set and refreshed
   // Renders a name and total for each row of the portfolio
-  document.querySelector('#editCryptoTotalAmountSpan').innerHTML = '# Shares';
+  document.querySelector('#editCryptoTotalAmountSpan').innerHTML = `<button id="addCrypto" type="button" onclick="displayAddCurrencyToEdit('crypto')">Add</button>`;
   const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
   cryptoAssets.map(async function (x) {
     const currentPrice = await x.currentPrice;
@@ -300,7 +301,7 @@ const renderEditCryptoCard = (portfolio) => {
               <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
             </td>
             <td>
-              <input id="${x.assetName}" class="editTextBox" value="${x.amount}"></input>     
+              <input id="${x.assetName}" class="editTextBox" type="number" step=0.1 value="${x.amount}"></input>     
             </td>
        </tr>`
   });
@@ -311,7 +312,7 @@ const renderEditStockCard = (portfolio) => {
   // * See renderMainApp() function
   // current prices and properties of portfolio are already set and refreshed
   // Renders a name and total for each row of the portfolio
-  document.querySelector('#editStockTotalAmountSpan').innerHTML = '# Shares';
+  document.querySelector('#editStockTotalAmountSpan').innerHTML = `<button id="addStock" type="button" onclick="displayAddCurrencyToEdit('stock')">Add</button>`;
   const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
   console.log(stockAssets);
   stockAssets.map(async function (x) {
@@ -325,7 +326,7 @@ const renderEditStockCard = (portfolio) => {
               <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
             </td>
             <td>
-              <input id="${x.assetName}" class="editTextBox" value="${x.amount}"style="float: right"></input>
+              <input id="${x.assetName}" class="editTextBox" type="number" step=0.1 value="${x.amount}"style="float: right"></input>
             </td>
         </tr>`
   });
@@ -333,12 +334,12 @@ const renderEditStockCard = (portfolio) => {
 
 const renderEditCashCard = (portfolio) => {
   document.querySelector('#editCashAmountSpan').innerHTML = "";
-  document.querySelector('#editCashAmountSpan').innerHTML = `<input id="usd" class="editTextBox" value="${portfolio.usd}"style="float: right"></input>`;
+  document.querySelector('#editCashAmountSpan').innerHTML = `<input id="usd" class="editTextBox" type="number" value="${portfolio.usd}"style="float: right"></input>`;
 }
 
 const renderEditStudentLoanCard = (portfolio) => {
   document.querySelector('#editStudentLoanSpan').innerHTML = "";
-  document.querySelector('#editStudentLoanSpan').innerHTML = `<input id="studentLoan"class="editTextBox" value="${portfolio.studentDebt}"style="float: right"></input>`;
+  document.querySelector('#editStudentLoanSpan').innerHTML = `<input id="studentLoan"class="editTextBox" type="number" step=100 value="${portfolio.studentDebt}"style="float: right"></input>`;
 }
 
 
@@ -407,6 +408,7 @@ document.querySelector('#editSubmitButton').addEventListener('click', function (
   // call renderMainApp at the end so the graphs and everything chang
   //document.getElementById("Edit").submit();
   renderMainApp(portfolio);
+  openCurrency(event, 'Total')
 });
 
 // document.querySelector('#defaultOpen').addEventListener('click', function (e) {
@@ -434,6 +436,33 @@ function openCurrency(evt, CurrencyName) {
     // Show the current tab, and add an "active" class to the button that opened the tab
     document.getElementById(CurrencyName).style.display = "block";
     evt.currentTarget.className += " active";
+}
+
+function displayAddCurrencyToEdit(crypto){
+  document.getElementById('addCurrencyCardId').style.display = 'block'
+  document.getElementById('addType').innerHTML = crypto
+}
+
+async function addCurrencyToEdit(type){
+  try{
+  if (type == 'crypto'){
+    var res = await fetchCryptoPrice(document.getElementById('addName').value)
+    if (res != undefined){
+    portfolio.assets.push({assetName:document.getElementById('addName').value,symbol:document.getElementById('addAbbr').value,amount:Number(document.getElementById('addAmount').value),currentPrice: undefined, crypto: true})
+    }
+  }
+  if (type == 'stock'){
+    var res = fetchStockPrice(document.getElementById('addAbbr').value)
+    if (res != undefined){
+    console.log(res.json)
+    portfolio.assets.push({assetName:document.getElementById('addName').value,symbol:document.getElementById('addAbbr').value,amount:Number(document.getElementById('addAmount').value),currentPrice: undefined, crypto: false})
+    }
+  }
+}
+  catch(err){
+    console.log(portfolio.assets)
+  }
+  console.log(portfolio.assets)
 }
 
 
@@ -466,11 +495,29 @@ function openCurrency(evt, CurrencyName) {
 
 
 
-async function addWatching(name,abbr){
+async function addWatching(name,abbr,crypto = false,pass = false){
   var type = 'Addition'
   var price = null
+  console.log(pass)
+  console.log(crypto)
 try{
-  if (document.getElementById("stockRadio").checked) {
+  if (pass == true && crypto == true){
+    type = 'crypto';
+    var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
+    var response = await fetch(url);
+    var json = await response.json();
+    //console.log(json);
+    price = json[0].price_usd;
+  }
+  if (pass == true && crypto == false){
+    type = 'stock';
+    var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
+    var response =  await fetch(url);
+    var json = await response.json();
+    //console.log(json);
+    price = json;
+  }
+  if (document.getElementById("stockRadio").checked && pass == false) {
     type = 'stock';
     var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
     var response =  await fetch(url);
@@ -479,7 +526,7 @@ try{
     price = json;
     portfolio.watching.push({name:name,abbreviation:abbr,crypto:false})
   }
-  if (document.getElementById("cryptoRadio").checked){
+  if (document.getElementById("cryptoRadio").checked && pass == false){
     type = 'crypto';
     var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
     var response = await fetch(url);
@@ -508,7 +555,9 @@ console.log(portfolio.watching)
 }
 
 function fillWatching(){
-  
+  for(i = 0; i < portfolio.watching.length; i++){
+    addWatching(portfolio.watching[i].name,portfolio.watching[i].abbreviation,portfolio.watching[i].crypto,true)
+  }
 }
 
 // const clearScreen = () => {
