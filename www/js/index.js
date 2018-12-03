@@ -106,11 +106,15 @@ async function fetchCryptoPrice(coinName) {
 async function fetchStockPrice(symbol) {
   const url = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
   const response = await fetch(url);
-  const json = await response.json();
-  //console.log(json);
-  const stockPrice = json;
-  //console.log(cryptoPrice + 'inside fetchStockPrice()');
-  return stockPrice;
+  try {
+    const json = await response.json();
+    console.log(json);
+    const stockPrice = json;
+    //console.log(cryptoPrice + 'inside fetchStockPrice()');
+    return stockPrice;
+  } catch (error) {
+    alert('Not a valid stock - Try again :)');
+  };
 };
 
 const setCurrentPrices= () => {
@@ -445,24 +449,28 @@ function displayAddCurrencyToEdit(crypto){
 
 async function addCurrencyToEdit(type){
   try{
-  if (type == 'crypto'){
-    var res = await fetchCryptoPrice(document.getElementById('addName').value)
-    if (res != undefined){
-    portfolio.assets.push({assetName:document.getElementById('addName').value,symbol:document.getElementById('addAbbr').value,amount:Number(document.getElementById('addAmount').value),currentPrice: undefined, crypto: true})
+    if (type == 'crypto'){
+      let res = await fetchCryptoPrice(document.getElementById('addName').value)
+      if (res != undefined) {
+        portfolio.assets.push({ assetName: document.getElementById('addName').value, symbol: document.getElementById('addAbbr').value, amount: Number(document.getElementById('addAmount').value), currentPrice: undefined, crypto: true });
+      }
+    }
+  } catch(err){
+    alert('Not a valid asset - Try again');
+  }
+  try {
+    if (type == 'stock') {
+      var res = fetchStockPrice(document.getElementById('addAbbr').value)
+      console.log(res.status);
+      if (res.status != undefined) {
+        console.log(res.json)
+        portfolio.assets.push({ assetName: document.getElementById('addName').value, symbol: document.getElementById('addAbbr').value, amount: Number(document.getElementById('addAmount').value), currentPrice: undefined, crypto: false })
+      }
     }
   }
-  if (type == 'stock'){
-    var res = fetchStockPrice(document.getElementById('addAbbr').value)
-    if (res != undefined){
-    console.log(res.json)
-    portfolio.assets.push({assetName:document.getElementById('addName').value,symbol:document.getElementById('addAbbr').value,amount:Number(document.getElementById('addAmount').value),currentPrice: undefined, crypto: false})
-    }
+  catch {
+    alert('Not a valid asset - Try again');
   }
-}
-  catch(err){
-    console.log(portfolio.assets)
-  }
-  console.log(portfolio.assets)
 }
 
 
