@@ -444,17 +444,24 @@ function displayAddCurrencyToEdit(crypto){
   document.getElementById('addType').innerHTML = crypto
 }
 
-function addCurrencyToEdit(type){
+async function addCurrencyToEdit(type){
+  try{
   if (type == 'crypto'){
+    var res = await fetchCryptoPrice(document.getElementById('addName').value)
+    if (res != undefined){
     portfolio.assets.push({assetName:document.getElementById('addName').value,symbol:document.getElementById('addAbbr').value,amount:Number(document.getElementById('addAmount').value),currentPrice: undefined, crypto: true})
+    }
   }
   if (type == 'stock'){
+    var res = fetchStockPrice(document.getElementById('addAbbr').value)
+    if (res != undefined){
+    console.log(res.json)
     portfolio.assets.push({assetName:document.getElementById('addName').value,symbol:document.getElementById('addAbbr').value,amount:Number(document.getElementById('addAmount').value),currentPrice: undefined, crypto: false})
+    }
   }
-  renderMainApp(portfolio)
-  let r1 = portfolio.assets[portfolio.assets.length-1].currentPrice
-  if (r1 == undefined){
-    portfolio.assets.splice(-1,1)
+}
+  catch(err){
+    console.log(portfolio.assets)
   }
   console.log(portfolio.assets)
 }
