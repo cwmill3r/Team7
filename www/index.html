@@ -28,12 +28,30 @@
   <!-- EDIT TAB -->
   <form id="Edit" class="tabcontent">
     <!-- Put it all here -->
+
+    <div class="row" id="addCurrencyCardId" style="display: none">
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+      <div class="col-lg-06 col-md-06 col-sm-12 lig" >
+        <span class="watchingCard" style="display: block; padding: 1vh 5vw 1vh 3vw; text-align: left">Add <span id="addType"></span>:</span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Name: </span><input id="addName" style="width: 15vw"></input></span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Symbol: </span><input id="addAbbr" style="width: 15vw"></input></span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Amount: </span><input id="addAmount" type="number" style="width: 15vw"></input></span>
+        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button onclick="addCurrencyToEdit(document.getElementById('addType').innerHTML)" type="button">Add</button></span>
+      </div>
+      <div class="col-lg-03 col-md-00 col-sm-00 wht">
+        <div>&nbsp;</div>
+      </div>
+    </div>
+
+
     <div class="row">
       <div class="col-lg-03 col-md-00 col-sm-00 wht">
         <div>&nbsp;</div>
       </div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editCashCard">
-        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Cash</span>
+        <span style="display: block; float: left; padding: 1vh 5vw 1vh 5vw;">Cash</span>
         <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editCashAmountSpan"></span>
       </div>
       <div class="col-lg-03 col-md-00 col-sm-00 wht">

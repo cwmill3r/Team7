@@ -291,7 +291,7 @@ const renderEditCryptoCard = (portfolio) => {
   // * See renderMainApp() function
   // current prices and properties of portfolio are already set and refreshed
   // Renders a name and total for each row of the portfolio
-  document.querySelector('#editCryptoTotalAmountSpan').innerHTML = '# Shares';
+  document.querySelector('#editCryptoTotalAmountSpan').innerHTML = `<button id="addCrypto" type="button" onclick="displayAddCurrencyToEdit('crypto')">Add</button>`;
   const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
   cryptoAssets.map(async function (x) {
     const currentPrice = await x.currentPrice;
@@ -302,7 +302,7 @@ const renderEditCryptoCard = (portfolio) => {
               <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
             </td>
             <td>
-              <input id="${x.assetName}" class="editTextBox" value="${x.amount}"></input>     
+              <input id="${x.assetName}" class="editTextBox" type="number" step=0.1 value="${x.amount}"></input>     
             </td>
        </tr>`
   });
@@ -313,7 +313,7 @@ const renderEditStockCard = (portfolio) => {
   // * See renderMainApp() function
   // current prices and properties of portfolio are already set and refreshed
   // Renders a name and total for each row of the portfolio
-  document.querySelector('#editStockTotalAmountSpan').innerHTML = '# Shares';
+  document.querySelector('#editStockTotalAmountSpan').innerHTML = `<button id="addStock" type="button" onclick="displayAddCurrencyToEdit('stock')">Add</button>`;
   const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
   console.log(stockAssets);
   stockAssets.map(async function (x) {
@@ -327,7 +327,7 @@ const renderEditStockCard = (portfolio) => {
               <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
             </td>
             <td>
-              <input id="${x.assetName}" class="editTextBox" value="${x.amount}"style="float: right"></input>
+              <input id="${x.assetName}" class="editTextBox" type="number" step=0.1 value="${x.amount}"style="float: right"></input>
             </td>
         </tr>`
   });
@@ -335,12 +335,12 @@ const renderEditStockCard = (portfolio) => {
 
 const renderEditCashCard = (portfolio) => {
   document.querySelector('#editCashAmountSpan').innerHTML = "";
-  document.querySelector('#editCashAmountSpan').innerHTML = `<input id="usd" class="editTextBox" value="${portfolio.usd}"style="float: right"></input>`;
+  document.querySelector('#editCashAmountSpan').innerHTML = `<input id="usd" class="editTextBox" type="number" value="${portfolio.usd}"style="float: right"></input>`;
 }
 
 const renderEditStudentLoanCard = (portfolio) => {
   document.querySelector('#editStudentLoanSpan').innerHTML = "";
-  document.querySelector('#editStudentLoanSpan').innerHTML = `<input id="studentLoan"class="editTextBox" value="${portfolio.studentDebt}"style="float: right"></input>`;
+  document.querySelector('#editStudentLoanSpan').innerHTML = `<input id="studentLoan"class="editTextBox" type="number" step=100 value="${portfolio.studentDebt}"style="float: right"></input>`;
 }
 
 
@@ -409,6 +409,7 @@ document.querySelector('#editSubmitButton').addEventListener('click', function (
   // call renderMainApp at the end so the graphs and everything chang
   //document.getElementById("Edit").submit();
   renderMainApp(portfolio);
+  openCurrency(event, 'Total')
 });
 
 // document.querySelector('#defaultOpen').addEventListener('click', function (e) {
@@ -436,6 +437,26 @@ function openCurrency(evt, CurrencyName) {
     // Show the current tab, and add an "active" class to the button that opened the tab
     document.getElementById(CurrencyName).style.display = "block";
     evt.currentTarget.className += " active";
+}
+
+function displayAddCurrencyToEdit(crypto){
+  document.getElementById('addCurrencyCardId').style.display = 'block'
+  document.getElementById('addType').innerHTML = crypto
+}
+
+function addCurrencyToEdit(type){
+  if (type == 'crypto'){
+    portfolio.assets.push({assetName:document.getElementById('addName').value,symbol:document.getElementById('addAbbr').value,amount:Number(document.getElementById('addAmount').value),currentPrice: undefined, crypto: true})
+  }
+  if (type == 'stock'){
+    portfolio.assets.push({assetName:document.getElementById('addName').value,symbol:document.getElementById('addAbbr').value,amount:Number(document.getElementById('addAmount').value),currentPrice: undefined, crypto: false})
+  }
+  renderMainApp(portfolio)
+  let r1 = portfolio.assets[portfolio.assets.length-1].currentPrice
+  if (r1 == undefined){
+    portfolio.assets.splice(-1,1)
+  }
+  console.log(portfolio.assets)
 }
 
 
