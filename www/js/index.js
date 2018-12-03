@@ -462,7 +462,7 @@ async function addCurrencyToEdit(type){
     if (type == 'stock') {
       var res = fetchStockPrice(document.getElementById('addAbbr').value)
       console.log(res.status);
-      if (res.status != undefined) {
+      if (res != undefined) {
         console.log(res.json)
         portfolio.assets.push({ assetName: document.getElementById('addName').value, symbol: document.getElementById('addAbbr').value, amount: Number(document.getElementById('addAmount').value), currentPrice: undefined, crypto: false })
       }
