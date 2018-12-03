@@ -56,7 +56,6 @@ let demoPortfolio = {
   "watching":[
   {"name":"Apple","abbreviation":"aapl","crypto":false}
   ],
-
 };
 
 // Either the demo portfolio or the portfolio from localStorage.portfolio becomes
