@@ -130,6 +130,12 @@ button {
   text-align: left;
 }
 
+.watchingCardOptions {
+  display: block;
+  padding: 1vh 5vw 1vh 3vw;
+  text-align: center;
+}
+
 #stockRadio {
   color: pink;
 }
