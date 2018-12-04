@@ -25,16 +25,16 @@
 let demoPortfolio = {
   "name": "Sparky",
   "investedTotal": 9035,
-  "currentPortfolioValue": undefined,
-  "currentCryptoValue": undefined,
-  "currentStockValue": undefined,
+  "currentPortfolioValue": null,
+  "currentCryptoValue": null,
+  "currentStockValue": null,
   "usd": 35,
   "studentDebt": 20000,
   "assets": [
-    { "assetName": "Bitcoin", "symbol": "btc", "amount": 1.4, "currentPrice": undefined, "crypto": true },
-    { "assetName": "Ethereum", "symbol": "eth", "amount": 14, "currentPrice": undefined, "crypto": true },
-    { "assetName": "Apple", "symbol": "aapl", "amount": 2, "currentPrice": undefined, "crypto": false },
-    { "assetName": "Google", "symbol": "googl", "amount": 4, "currentPrice": undefined, "crypto": false }
+    { "assetName": "Bitcoin", "symbol": "btc", "amount": 1.4, "currentPrice": null, "crypto": true },
+    { "assetName": "Ethereum", "symbol": "eth", "amount": 14, "currentPrice": null, "crypto": true },
+    { "assetName": "Apple", "symbol": "aapl", "amount": 2, "currentPrice": null, "crypto": false },
+    { "assetName": "Google", "symbol": "googl", "amount": 4, "currentPrice": null, "crypto": false }
   ],
   "historical": [
     6000,
@@ -62,6 +62,10 @@ let demoPortfolio = {
 // Either the demo portfolio or the portfolio from localStorage.portfolio becomes
 // this portfolio which is used throughout the app 
 let portfolio = undefined;
+
+async function saveToLocalStorage(){
+  localStorage.portfolio = JSON.stringify(portfolio);
+}
 
 
 // function runQuery() {
@@ -179,7 +183,7 @@ async function renderMainApp (portfolio) {
   setStockCurrentValue();
   await setCurrentPortfolioValue();
   // Save to Local Storage need to move this to the end of the app eventually. 
-  saveToLocalStorage(portfolio);
+  saveToLocalStorage();
   // console.log(JSON.parse(localStorage.portfolio));
   // Render the app
   renderHeading(portfolio);
@@ -350,11 +354,7 @@ const renderEditStudentLoanCard = (portfolio) => {
 // END OF EDIT TAB CODE
 
 
-const saveToLocalStorage = (portfolio) => {
-  if (localStorage.portfolio === null) {
-    localStorage.portfolio = JSON.stringify(portfolio);
-  };
-}
+
 
 
 
@@ -498,6 +498,7 @@ catch(err){
       alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
 }
 console.log(portfolio.watching)
+saveToLocalStorage();
 }
 
 function fillWatching(){
@@ -521,9 +522,10 @@ async function init() {
     portfolio = demoPortfolio;
     renderMainApp(portfolio);
   } else {
-    portfolio = localStorage.portfolio;
+    portfolio = JSON.parse(localStorage.portfolio);
     renderMainApp(portfolio);
   }
+  saveToLocalStorage();
   fillWatching();
 }
 
