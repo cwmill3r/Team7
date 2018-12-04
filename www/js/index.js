@@ -176,6 +176,19 @@ async function setStockCurrentValue() {
   portfolio.currentStockValue = stockValue;
 }
 
+const deleteFromEditButton = (symbol) => {
+  console.log('Hello deleteFromEditButton');
+  console.log(symbol);
+  portfolio.assets.forEach(function(asset, index) {
+    if(symbol === asset.symbol) {
+      portfolio.assets.splice(index, 1);
+    }
+  });
+  console.log(portfolio);
+  renderMainApp(portfolio);
+  renderEditCryptoCard(portfolio);
+}
+
 async function renderMainApp (portfolio) {
   // Call portfolio objects functions to get all the values set & refreshed
   setCurrentPrices();
@@ -308,12 +321,20 @@ const renderEditCryptoCard = (portfolio) => {
             <td>
               <span style="float: left; padding: 0 5vw 0 10vw; color:slateblue">${x.assetName}</span>
             </td>
-            <td>
-              <input id="${x.assetName}" class="editTextBox" type="number" step=0.1 value="${x.amount}"></input>     
+            <td style="white-space:nowrap;">
+              <button
+                id="${x.symbol}"
+                onclick="deleteFromEditButton('${x.symbol}')"
+                type="button"
+                style="width: 2vw; color: asuMaroon; background-color: grey; border: none;">
+                  x
+              </button>
+              <input id="${x.assetName}" class="editTextBox" type="number" step=0.1 value="${x.amount}"></input>
             </td>
        </tr>`
   });
 }
+
 
 const renderEditStockCard = (portfolio) => {
   document.querySelector('#editStockTable').innerHTML = "";
