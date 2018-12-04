@@ -447,6 +447,7 @@ function displayAddCurrencyToEdit(crypto){
   document.getElementById('addType').innerHTML = crypto
 }
 
+// Handles the onClick event from Edit > add new stock or crypto
 async function addCurrencyToEdit(type){
   try{
     if (type == 'crypto'){

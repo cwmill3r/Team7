@@ -78,6 +78,27 @@ path {
   height: 30vh;
 }
 
+.cardHeadingSpan {
+  display: block;
+  float: left; 
+  padding: 1vh 5vw 1vh 5vw;
+}
+
+.cardSubHeadingSpan {
+  float: right;
+  padding: 1vh 5vw 1vh 5vw;
+}
+
+.cardTableDiv {
+  clear: both;
+  display: block;
+}
+
+.cardTable {
+  background-color: grey;
+  border-radius: 0 0 10px 10px;
+}
+
 .cryptoAmounts {
   width: 13vw;
 }
@@ -95,11 +116,17 @@ path {
   border-radius: 10px;
 }
 
-.submitButton {
-  color: lightyellow;
+button {
+  color: #990033;
   width: 33vw;
   background-color: lightslategray;
   border-radius: 10px; 
+}
+
+.watchingCard {
+  display: block;
+  padding: 1vh 5vw 1vh 3vw;
+  text-align: left;
 }
 
 /* For phones (portrait) unless another @media rule below is fired */
@@ -176,4 +203,6 @@ path {
 .wht {background-color: #ffffff;}
 .hot {background-color: hotpink;}
 .lig {background-color: lightslategrey;}
+.asuMaroon {background-color: #990033;}
+.asuGold {background-color: #ffb310;}
 

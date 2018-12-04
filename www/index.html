@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Solareum</title>
+  <title>ASU Portfolio</title>
 
   <!-- This is not a secure content policy, should be locked down for prod -->
   <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'" />
@@ -16,168 +16,124 @@
 
 <!-- no onload - see index.js for "ondeviceready" event listener -->
 <body>
-  <div class="col-lg-03 col-md-00 col-sm-00 wht">
-    <div>&nbsp;</div>
-  </div>
+
+  <!-- Tabs -->
   <div class="tab">
     <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Total')" id="defaultOpen">Portfolio</button>
     <button id="editTabButton" class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Edit');"> Edit</button>
     <button class="tablinks col-lg-02 col-md-02 col-sm-04 li" onclick="openCurrency(event, 'Watching')"> Watching</button>
   </div>
+  <!-- End of Tabs -->
   
-  <!-- EDIT TAB -->
+  <!-- Edit Tab -->
+  <!-- Add Functionality of Edit Tab -->
   <form id="Edit" class="tabcontent">
-    <!-- Put it all here -->
-
     <div class="row" id="addCurrencyCardId" style="display: none">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig" >
-        <span class="watchingCard" style="display: block; padding: 1vh 5vw 1vh 3vw; text-align: left">Add <span id="addType"></span>:</span>
-        <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Name: </span><input id="addName" style="width: 15vw"></input></span>
+        <span class="watchingCard">Add <span id="addType"></span></span>
+        <span"><span>Name: </span><input id="addName" style="width: 15vw"></input></span>
         <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Symbol: </span><input id="addAbbr" style="width: 15vw"></input></span>
         <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><span>Amount: </span><input id="addAmount" type="number" style="width: 15vw"></input></span>
         <span style="display: block; padding: 1vh 5vw 1vh 5vw;"><button onclick="addCurrencyToEdit(document.getElementById('addType').innerHTML)" type="button">Add</button></span>
       </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
     </div>
-
+    <!-- End of Add Functionality of Edit Tab  -->
 
     <div class="row">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editCashCard">
-        <span style="display: block; float: left; padding: 1vh 5vw 1vh 5vw;">Cash</span>
-        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editCashAmountSpan"></span>
-      </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
+        <span class="cardHeadingSpan">Cash</span>
+        <span class="cardSubHeadingSpan" id="editCashAmountSpan"></span>
       </div>
     </div>
     
-    <div class="row" id="BitcoinInfo">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+    <div class="row">
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editBitcoinCard">
-        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Crypto</span>
-        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editCryptoTotalAmountSpan"></span>
-        <span style="clear: both; display: block; ">
-          <table id="editCryptoTable" style="background-color: grey; border-radius: 0 0 10px 10px">
+        <span class="cardHeadingSpan">Crypto</span>
+        <span class="cardSubHeadingSpan" id="editCryptoTotalAmountSpan"></span>
+        <div class="cardTableDiv">
+          <table class="cardTable" id="editCryptoTable">
             <!-- Here is where the renderEditCryptoCard function outputs -->
           </table>
-        </span>
-      </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
+        </div>
       </div>
     </div>
     
-    <div class="row" id="StockInfo">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+    <div class="row">
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editStockCard">
-        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Stock</span>
-        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editStockTotalAmountSpan"></span>
-        <span style="clear: both; display: block;">
-          <table id="editStockTable" style="background-color: grey; border-radius: 0 0 10px 10px">
+        <span class="cardHeadingSpan">Stock</span>
+        <span class="cardSubHeadingSpan" id="editStockTotalAmountSpan"></span>
+        <div class="cardTableDiv">
+          <table class="cardTable" id="editStockTable">
             <!-- Here is where the renderEditStockCard function outputs -->
           </table>
-        </span>
-      </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
+        </div>
       </div>
     </div>
     
-    <div class="row" id="LoanInfo">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+    <div class="row">
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="editStudentLoanCard">
-        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Student Loan</span>
-        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="editStudentLoanSpan"></span>
-      </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
+        <span class="cardHeadingSpan">Student Loan</span>
+        <span class="cardSubHeadingSpan" id="editStudentLoanSpan"></span>
       </div>
     </div>
-    <button id="editSubmitButton" class="submitButton" type="button" value="Submit">Submit</button>
+
+    <button id="editSubmitButton" class="submitButton" type="button" value="Submit">
+      Submit
+    </button>
   </form>
-  
-  <!-- End of edit -->
+  <!-- End of Edit Tab -->
 
-
-
-
-
+  <!-- Portfolio Tab -->
   <div class="tabcontent" id="Total">
-    <div class="row" id="graph">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
-      <div class="col-lg-06 col-md-06 col-sm-12 tea" id="sparkline"></div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
+    <div class="row">
+      <div>
+        <div class="col-lg-06 col-md-06 col-sm-12 tea" id="sparkline"></div>
+      </div>
     </div>
     <!-- Portfolio CashCard -->
     <div class="row">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="cashCard">
-        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Cash</span>
-        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="cashAmountSpan"></span>
+        <span class="cardHeadingSpan">Cash</span>
+        <span class="cardSubHeadingSpan" id="cashAmountSpan"></span>
       </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
     </div>
-  
-    <div class="row" id="BitcoinInfo">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
+    <div class="row">
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="bitcoinCard">
-        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Crypto</span>
-        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="cryptoTotalAmountSpan"></span>
-        <span style="clear: both; display: block; ">
-          <table id="cryptoTable" style="background-color: grey; border-radius: 0 0 10px 10px">
+        <span class="cardHeadingSpan">Crypto</span>
+        <span class="cardSubHeadingSpan" id="cryptoTotalAmountSpan"></span>
+        <div class="cardTableDiv">
+          <table id="cryptoTable" class="cardTable">
             <!-- Here is where the renderCryptoCard function outputs -->
           </table>
-        </span>
+        </div>
       </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
     </div>
   
-    <div class="row" id="StockInfo">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
+    <div class="row">
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="stockCard">
-        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Stock</span>
-        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="stockTotalAmountSpan"></span>
-        <span style="clear: both; display: block;">
-          <table id="stockTable" style="background-color: grey; border-radius: 0 0 10px 10px">
+        <span class="cardHeadingSpan">Stock</span>
+        <span class="cardSubHeadingSpan" id="stockTotalAmountSpan"></span>
+        <div class="cardTableDiv">
+          <table id="stockTable" class="cardTable">
             <!-- Here is where the renderStockCard function outputs -->
           </table>
-        </span>
-      </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
+        </div>
       </div>
     </div>
   
-    <div class="row" id="LoanInfo">
+    <div class="row">
       <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="studentLoanCard">
-        <span style="float: left; padding: 1vh 5vw 1vh 5vw;">Student Loan</span>
-        <span style="float: right; padding: 1vh 5vw 1vh 5vw;" id="studentLoanSpan"></span>
+        <span class="cardHeadingSpan">Student Loan</span>
+        <span class="cardSubHeadingSpan" id="studentLoanSpan"></span>
       </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht"><div>&nbsp;</div></div>
     </div>
   </div>
 
+  <!-- End of Portfolio Tab -->
 
-
-<div class="row tabcontent" style="display: block; " id="Watching">
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
+<!-- Watching Tab -->
+  <div class="row tabcontent" style="display: block; " id="Watching">
       <div class="col-lg-06 col-md-06 col-sm-12 lig" id="watchingCardId">
         <span class="watchingCard" style="display: block; padding: 1vh 5vw 1vh 3vw; text-align: left">Choose currency type:</span>
         <span style="display: block; padding: 1vh 5vw 1vh 5vw;">
@@ -192,15 +148,11 @@
           </tr>
         </table>
       </div>
-      <div class="col-lg-03 col-md-00 col-sm-00 wht">
-        <div>&nbsp;</div>
-      </div>
-    </div>
+  </div>
 
 
 
   <!-- <script type="text/javascript" src="cordova.js"></script> -->
-  <script type="text/javascript" src="./js/mysql.js"></script>
   <script type="text/javascript" src="./js/index.js"></script>
   <script type="text/javascript">
     document.getElementById("defaultOpen").click();
