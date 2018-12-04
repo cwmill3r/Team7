@@ -413,7 +413,7 @@ function displayAddCurrencyToEdit(crypto){
 }
 
 // Handles the onClick event from Edit > add new stock or crypto
-async function addCurrencyToEdit(type){
+async function addCurrencyToEdit(type) {
   try{
     if (type == 'crypto'){
       let res = await fetchCryptoPrice(document.getElementById('addName').value)
@@ -454,6 +454,10 @@ async function addCurrencyToEdit(type){
     }, millisecondsToWait);
   }
   renderMainApp(portfolio);
+  document.querySelector('#addCurrencyCardId').style.display = "none";
+  document.querySelector('#addName').value = "";
+  document.querySelector('#addAbbr').value = "";
+  document.querySelector('#addAmount').value = "";
 }
 
 async function addWatching(name,abbr,crypto = false,pass = false){
