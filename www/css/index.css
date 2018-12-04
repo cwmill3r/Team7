@@ -59,6 +59,7 @@ form {
     padding: 6px 12px;
     border: 1px solid #ccc;
     border-top: none;
+    background-color: black;
 } 
 
 table{
@@ -111,16 +112,16 @@ path {
 .editTextBox {
   float: right;
   max-width: 20vw;
-  background-color: #008080;
-  border: none;
+  background-color: grey;
+  border: 1px solid white;
   border-radius: 10px;
 }
 
 button {
   color: #990033;
-  width: 33vw;
+  width: 31vw;
   background-color: lightslategray;
-  border-radius: 10px; 
+  border-radius: 10px;
 }
 
 .watchingCard {
@@ -135,6 +136,19 @@ button {
 
 #cryptoRadio {
    color: pink;
+}
+
+#usd {
+max-width: 31vw;
+}
+
+#studentLoan {
+  max-width: 31vw;
+  margin: 0 1vw;
+}
+
+#editStudentLoanHeading {
+  font-size: 3.6vh;
 }
 
 /* For phones (portrait) unless another @media rule below is fired */

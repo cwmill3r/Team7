@@ -327,10 +327,16 @@ const renderEditCryptoCard = (portfolio) => {
                 id="${x.symbol}"
                 onclick="deleteFromEditButton('${x.symbol}')"
                 type="button"
-                style="width: 2vw; color: asuMaroon; background-color: grey; border: none;">
-                  x
-              </button>
-              <input id="${x.assetName}" class="editTextBox" type="number" step=0.1 value="${x.amount}"></input>
+                style="width: 2vw; color: asuMaroon; background-color: grey; border: none;"
+              > x</button>
+              <input
+                style="margin: 0 5vw"
+                id="${x.assetName}"
+                class="editTextBox"
+                type="number"
+                step=0.1
+                value="${x.amount}">
+              </input>
             </td>
        </tr>`
   });
@@ -361,8 +367,15 @@ const renderEditStockCard = (portfolio) => {
                 onclick="deleteFromEditButton('${x.symbol}')"
                 type="button"
                 style="width: 2vw; color: asuMaroon; background-color: grey; border: none;"
-              >x</button>
-              <input id="${x.assetName}" class="editTextBox" type="number" step=0.1 value="${x.amount}"style="float: right"></input>
+              > x</button>
+              <input
+                style="margin: 0 5vw"
+                id="${x.assetName}"
+                class="editTextBox"
+                type="number"
+                step=0.1
+                value="${x.amount}">
+              </input>
             </td>
         </tr>`
   });
@@ -370,12 +383,12 @@ const renderEditStockCard = (portfolio) => {
 
 const renderEditCashCard = (portfolio) => {
   document.querySelector('#editCashAmountSpan').innerHTML = "";
-  document.querySelector('#editCashAmountSpan').innerHTML = `<input id="usd" class="editTextBox" type="number" value="${portfolio.usd}"style="float: right"></input>`;
+  document.querySelector('#editCashAmountSpan').innerHTML = `<input id="usd" class="editTextBox" type="number" value="${portfolio.usd}" style="float: right"></input>`;
 }
 
 const renderEditStudentLoanCard = (portfolio) => {
   document.querySelector('#editStudentLoanSpan').innerHTML = "";
-  document.querySelector('#editStudentLoanSpan').innerHTML = `<input id="studentLoan"class="editTextBox" type="number" step=100 value="${portfolio.studentDebt}"style="float: right"></input>`;
+  document.querySelector('#editStudentLoanSpan').innerHTML = `<input id="studentLoan" class="editTextBox" type="number" step=100 value="${portfolio.studentDebt}" style="float: right;"></input>`;
 }
 
 
