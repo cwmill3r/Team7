@@ -357,63 +357,7 @@ const saveToLocalStorage = (portfolio) => {
 }
 
 
-// add event listeners below
 
-/* wait until all phonegap/cordova is loaded then call onDeviceReady*/
-document.addEventListener("deviceready", onDeviceReady(), false);
-function onDeviceReady() {
-  init();
-  console.log('onDeviceReady worked');
-}
-//Below is the onLoad function I was calling before converting to phonegap
-// document.body.addEventListener('load', init(), false);
-async function init() {
-  if (localStorage.portfolio === undefined) {
-    portfolio = demoPortfolio;
-    renderMainApp(portfolio);
-  } else {
-    portfolio = localStorage.portfolio;
-    renderMainApp(portfolio);
-  }
-  fillWatching();
-}
-
-document.querySelector('#editTabButton').addEventListener('click', function (e) {
-  // To prevent it reloading
-  e.preventDefault();
-  renderEditCashCard(portfolio);
-  renderEditCryptoCard(portfolio);
-  renderEditStockCard(portfolio);
-  renderEditStudentLoanCard(portfolio);
-})
-
-document.querySelector('#editSubmitButton').addEventListener('click', function (e) {
-  // To prevent it reloading
-  e.preventDefault();
-  // need to read all the values and match them to values in the portfolio object.
-  var els = document.getElementsByClassName("editTextBox");
-
-  // This loops through the textboxes and then uses their value to change the
-  // portfolio object
-  Array.prototype.forEach.call(els, function (el) {
-    
-    portfolio.assets.forEach(function(asset) {
-      if (el.id === asset.assetName) {
-        asset.amount = el.value;
-      } else if (el.id === "usd") {
-        portfolio.usd = el.value;
-      } else if(el.id == "studentLoan") {
-        portfolio.studentDebt = el.value;
-      };
-    });
-  });
-
-  console.log(portfolio);
-  // call renderMainApp at the end so the graphs and everything chang
-  //document.getElementById("Edit").submit();
-  renderMainApp(portfolio);
-  openCurrency(event, 'Total')
-});
 
 // document.querySelector('#defaultOpen').addEventListener('click', function (e) {
 //   // To prevent it reloading
@@ -455,9 +399,17 @@ async function addCurrencyToEdit(type){
       if (res != undefined) {
         portfolio.assets.push({ assetName: document.getElementById('addName').value, symbol: document.getElementById('addAbbr').value, amount: Number(document.getElementById('addAmount').value), currentPrice: undefined, crypto: true });
       }
+      var millisecondsToWait = 200;
+      setTimeout(function () {
+        renderEditCryptoCard(portfolio);
+      }, millisecondsToWait);
     }
   } catch(err){
     alert('Not a valid asset - Try again');
+    var millisecondsToWait = 500;
+    setTimeout(function () {
+      renderEditCryptoCard(portfolio);
+    }, millisecondsToWait);
   }
   try {
     if (type == 'stock') {
@@ -468,43 +420,24 @@ async function addCurrencyToEdit(type){
         portfolio.assets.push({ assetName: document.getElementById('addName').value, symbol: document.getElementById('addAbbr').value, amount: Number(document.getElementById('addAmount').value), currentPrice: undefined, crypto: false })
       }
     }
+    var millisecondsToWait = 200;
+    setTimeout(function () {
+      renderEditStockCard(portfolio);
+    }, millisecondsToWait);
   }
   catch {
     alert('Not a valid asset - Try again');
+    var millisecondsToWait = 500;
+    setTimeout(function () {
+      renderEditStockCard(portfolio);
+    }, millisecondsToWait);
   }
+  renderMainApp(portfolio);
 }
 
-
-// function loadEdit(){
-//   document.getElementById("ethereumCryptoAmount").value = portfolio.ethereumAmount;
-//   document.getElementById("bitcoinCryptoAmount").value = portfolio.bitcoinAmount;
-//   document.getElementById("appleStockAmount").value = portfolio.appleStockAmount;
-//   document.getElementById("googleStockAmount").value = portfolio.googleStockAmount;
-//   document.getElementById("cashAmount").value = portfolio.usd;
-//   document.getElementById("loanAmount").value = portfolio.studentDebt;
-// }
-
-// function setPortfolioValues(){
-//   // console.log(document.getElementsByClassName('cryptoTypes')[0].childNodes[0].innerHTML);
-//   assetPortfolio[0].amount.value = document.getElementById('cashAmount');
-//   assetPortfolio[1].amount.value = document.getElementById('bitcoinCryptoAmount');
-//   assetPortfolio[2].amount.value = document.getElementById('ethereumCryptoAmount');
-//   assetPortfolio[3].amount.value = document.getElementById('appleStockAmount');
-//   assetPortfolio[4].amount.value = document.getElementById('googleStockAmount');
-  
-// }
-
-// function addCrypto(){
-//   document.getElementById("cryptoDiv").innerHTML = document.getElementById("cryptoDiv").innerHTML + '<span class="cryptoTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="cryptoAmounts" style="width: 15vw"></input> </span><input class="cryptoAmounts" style="width: 15vw"></input></span>'
-// }
-
-// function addStock(){
-//   document.getElementById("stockDiv").innerHTML = document.getElementById("stockDiv").innerHTML + '<span class="stockTypes" style="display: block; padding: 1vh 5vw 1vh 5vw;"><span><input class="stockAmounts" style="width: 15vw"></input> </span><input class="stockAmounts" style="width: 15vw"></input></span>'
-// }
-
-
-
 async function addWatching(name,abbr,crypto = false,pass = false){
+  name = name.toLowerCase();
+  abbr = abbr.toLowerCase();
   var type = 'Addition'
   var price = null
   console.log(pass)
@@ -550,8 +483,12 @@ try{
   var row = mytable.insertRow(0);
   var cell1 = row.insertCell(0);
   var cell2 = row.insertCell(1);
-  cell1.innerHTML = abbr
-  cell2.innerHTML = price
+  var cell3 = row.insertCell(1);
+    cell1.innerHTML = `
+      <div class="col-lg-06 col-md-06 col-sm-12" id="${name}WatchingCard">
+        <span class="cardHeadingSpan">${name.charAt(0).toUpperCase() + name.slice(1)}</span>
+        <span class="cardSubHeadingSpan" id="cashAmountSpan">$${Math.round(price * 100) / 100}</span>
+      </div>`;
   }
   else{
     alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
@@ -569,42 +506,64 @@ function fillWatching(){
   }
 }
 
-// const clearScreen = () => {
-//   document.body.innerHTML = '';
-// }
+// add event listeners below
 
-// const unhide = (clickedButton, divID) => {
-//   var item = document.getElementById(divID);
-//   if (item) {
-//     if (item.className == 'hidden') {
-//       item.className = 'unhidden';
-//       clickedButton.value = 'hide'
-//     } else {
-//       item.className = 'hidden';
-//       clickedButton.value = 'unhide'
-//     }
-//   }
-// }
+/* wait until all phonegap/cordova is loaded then call onDeviceReady*/
+document.addEventListener("deviceready", onDeviceReady(), false);
+function onDeviceReady() {
+  init();
+  console.log('onDeviceReady worked');
+}
+//Below is the onLoad function I was calling before converting to phonegap
+// document.body.addEventListener('load', init(), false);
+async function init() {
+  if (localStorage.portfolio === undefined) {
+    portfolio = demoPortfolio;
+    renderMainApp(portfolio);
+  } else {
+    portfolio = localStorage.portfolio;
+    renderMainApp(portfolio);
+  }
+  fillWatching();
+}
 
-// window.smoothScroll = function(target) {
-//     var scrollContainer = target;
-//     do { //find scroll container
-//         scrollContainer = scrollContainer.parentNode;
-//         if (!scrollContainer) return;
-//         scrollContainer.scrollTop += 1;
-//     } while (scrollContainer.scrollTop == 0);
+document.querySelector('#editTabButton').addEventListener('click', function (e) {
+  // To prevent it reloading
+  e.preventDefault();
+  renderEditCashCard(portfolio);
+  renderEditCryptoCard(portfolio);
+  renderEditStockCard(portfolio);
+  renderEditStudentLoanCard(portfolio);
+})
 
-//     var targetY = 0;
-//     do { //find the top of target relatively to the container
-//         if (target == scrollContainer) break;
-//         targetY += target.offsetTop;
-//     } while (target = target.offsetParent);
+document.querySelector('#editSubmitButton').addEventListener('click', function (e) {
+  // To prevent it reloading
+  e.preventDefault();
+  // need to read all the values and match them to values in the portfolio object.
+  var els = document.getElementsByClassName("editTextBox");
 
-//     scroll = function(c, a, b, i) {
-//         i++; if (i > 30) return;
-//         c.scrollTop = a + (b - a) / 30 * i;
-//         setTimeout(function(){ scroll(c, a, b, i); }, 20);
-//     }
-//     // start scrolling
-//     scroll(scrollContainer, scrollContainer.scrollTop, targetY, 0);
-// }
+  // This loops through the textboxes and then uses their value to change the
+  // portfolio object
+  Array.prototype.forEach.call(els, function (el) {
+
+    portfolio.assets.forEach(function (asset) {
+      if (el.id === asset.assetName) {
+        asset.amount = el.value;
+      }
+    });
+
+    if (el.id === "usd") {
+      portfolio.usd = parseFloat(el.value);
+    } else if (el.id == "studentLoan") {
+      portfolio.studentDebt = parseFloat(el.value);
+    };
+    console.log(portfolio);
+  });
+
+
+  console.log(portfolio);
+  // call renderMainApp at the end so the graphs and everything chang
+  //document.getElementById("Edit").submit();
+  renderMainApp(portfolio);
+  openCurrency(event, 'Total');
+});

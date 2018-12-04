@@ -129,6 +129,14 @@ button {
   text-align: left;
 }
 
+#stockRadio {
+  color: pink;
+}
+
+#cryptoRadio {
+   color: pink;
+}
+
 /* For phones (portrait) unless another @media rule below is fired */
 @media only screen and (max-width: 499px) {
   .col-sm-00  {display: 		   none; }
