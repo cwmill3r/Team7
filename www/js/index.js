@@ -1,27 +1,8 @@
 // 'use strict';
 // Use strict doesnt allow stringified portfolio to be saved to local storage
 
-// This portfolio object contains all the info needed to render a users portfolio
-// investedTotal is the amount they paid for assets - when a user adds a crypto
-// asset or stock this amount is updated. It's used to calculate a gain or loss for the
-// entire portfolio. We dont track gains or losses for individual assets at this point
-// If a user decreases (sells) an asset they have to update their usd themselves
-// The current value of the portfolio is calculated with the amount of a certain
-// asset in the portfolio * the price which comes from the API calls
-// Finally the historical array is an array of total portfolio values calculated
-// daily (we simulate a daily calculation) at this point 11/24/18
-
-// We could make a function which gets the end of day portfolio value and
-// and then pushes it to the historical array
-// And then if edits were made to holdings we could edit the last value of the historical
-// array to get a current portfolio value
-
-// We also need to make an onClick action for the student debt card which maps
-// over the historical array and decreases all values by the student debt ammount
-// Then it rerenders the graph and updates the total current portfolio value
-// It should also change the color of the graph's background
-
 // If user has localStorage.portfolio === undefined then the demoPortfolio is loaded
+// else their saved portfolio is loaded
 let demoPortfolio = {
   "name": "Sparky",
   "investedTotal": 9035,
@@ -31,10 +12,10 @@ let demoPortfolio = {
   "usd": 35,
   "studentDebt": 20000,
   "assets": [
-    { "assetName": "Bitcoin", "symbol": "btc", "amount": 1.4, "currentPrice": null, "crypto": true },
-    { "assetName": "Ethereum", "symbol": "eth", "amount": 14, "currentPrice": null, "crypto": true },
-    { "assetName": "Apple", "symbol": "aapl", "amount": 2, "currentPrice": null, "crypto": false },
-    { "assetName": "Google", "symbol": "googl", "amount": 4, "currentPrice": null, "crypto": false }
+    { "assetName": "Bitcoin", "symbol": "btc", "amount": 1, "currentPrice": null, "crypto": true },
+    { "assetName": "Ethereum", "symbol": "eth", "amount": 10, "currentPrice": null, "crypto": true },
+    { "assetName": "Apple", "symbol": "aapl", "amount": 10, "currentPrice": null, "crypto": false },
+    { "assetName": "Google", "symbol": "googl", "amount": 5, "currentPrice": null, "crypto": false }
   ],
   "historical": [
     6000,
@@ -63,64 +44,38 @@ let demoPortfolio = {
 // this portfolio which is used throughout the app 
 let portfolio = undefined;
 
+// Stores portfolio to localStorage
 async function saveToLocalStorage(){
   localStorage.portfolio = JSON.stringify(portfolio);
 }
 
-
-// function runQuery() {
-//   MySql.Execute(
-//     "sql.wpc-is.online",	// mySQL server
-//     "cwmiller", 				// login name
-//     "cwmi3301", 			// login password
-//     "db_test_cwmiller", 			// database to use
-//     // SQL query string:
-//     "SELECT 											\
-// 				portfolio 						\
-// 			 FROM 												\
-// 				users 							\
-// 			 WHERE 												\
-// 				id = 4  	\
-// 			 ;",
-//     function (data) {
-//       processQueryResult(data);
-//     }
-//   );
-// }
-
-// function processQueryResult(queryReturned) {
-//   if (!queryReturned.Success) {
-//     alert(queryReturned.Error);
-//   } else {
-//     console.log(JSON.stringify(queryReturned.Result), null, 2);
-//     //portfolio = JSON.parse(queryReturned.Result, null, 2);
-//   }
-// }
-
+// Fetches crypto prices using coin name
+// Names with spaces need to use -
 async function fetchCryptoPrice(coinName) {
   const url = `https://api.coinmarketcap.com/v1/ticker/${coinName}/?convert=USD`;
   const response = await fetch(url);
   const json = await response.json();
   //console.log(json);
   const cryptoPrice = json[0].price_usd;
-  //console.log(cryptoPrice + 'inside fetchCryptoPrice()');
   return cryptoPrice;
 };
 
+// Fetches stocks prices using symbol
 async function fetchStockPrice(symbol) {
   const url = `https://api.iextrading.com/1.0/stock/${symbol}/price`;
   const response = await fetch(url);
   try {
     const json = await response.json();
-    console.log(json);
+    //console.log(json);
     const stockPrice = json;
-    //console.log(cryptoPrice + 'inside fetchStockPrice()');
     return stockPrice;
   } catch (error) {
     alert('Not a valid stock - Try again :)');
   };
 };
 
+// Uses the API calls to get the current prices of both stock
+// and crypto assets
 const setCurrentPrices= () => {
   // sets current price for crypto assets
   const cryptoAssets = portfolio.assets.filter(asset => asset.crypto);
@@ -180,30 +135,31 @@ async function setStockCurrentValue() {
   portfolio.currentStockValue = stockValue;
 }
 
+// Deletes an asset from the portfolio
+// Used within Edit Tab
 const deleteFromEditButton = (symbol) => {
-  console.log('Hello deleteFromEditButton');
-  console.log(symbol);
   portfolio.assets.forEach(function(asset, index) {
     if(symbol === asset.symbol) {
       portfolio.assets.splice(index, 1);
     }
   });
-  console.log(portfolio);
+  // Re renders stuff to show updates
   renderMainApp(portfolio);
   renderEditCryptoCard(portfolio);
   renderEditStockCard(portfolio);
 }
 
+// This is renders the Portfolio Tab
+// The main functions for the math are called here
 async function renderMainApp (portfolio) {
   // Call portfolio objects functions to get all the values set & refreshed
   setCurrentPrices();
   setCryptoCurrentValue();
   setStockCurrentValue();
   await setCurrentPortfolioValue();
-  // Save to Local Storage need to move this to the end of the app eventually. 
+  // With the portfolio updated we can save to local storage
   saveToLocalStorage();
-  // console.log(JSON.parse(localStorage.portfolio));
-  // Render the app
+  // Render the Portfolio Tab
   renderHeading(portfolio);
   renderGraph(portfolio);
   renderCashCard(portfolio);
@@ -212,13 +168,14 @@ async function renderMainApp (portfolio) {
   renderStockCard(portfolio); // fetches current prices within function
 }
 
-
+// Renders the heading within the Portfolio Tab
 const renderHeading = (portfolio) => {
   // Writes heading text with total portfolio value
   let headingText = `<h3>${portfolio.name}</h3>` + `<p>$${Math.round(portfolio.historical[portfolio.historical.length - 1]).toLocaleString()}</p>`;
   document.querySelector('#sparkline').innerHTML = headingText;
 }
 
+// Render the alternate heading if the Student Loan card is clicked
 const renderStudentLoanHeading = (portfolio) => {
   // Writes heading text with total portfolio value
   let headingText = `<h3>${portfolio.name}</h3>` + `<p>$${Math.round(portfolio.currentPortfolioValue - portfolio.studentDebt).toLocaleString()}</p>`;
@@ -226,6 +183,7 @@ const renderStudentLoanHeading = (portfolio) => {
   console.log('im doing something');
 }
 
+// Renders the graph using d3.js charting library
 const renderGraph = (portfolio) => {
   // Start of sparkline code
   // create an SVG element inside the #graph div that fills 100% of the div
@@ -260,42 +218,7 @@ const renderGraph = (portfolio) => {
   graph.append("svg:path").attr("d", line(data));
 }
 
-// const renderStudentLoanGraph = (portfolio) => {
-//   // Start of sparkline code
-//   // create an SVG element inside the #graph div that fills 100% of the div
-//   document.querySelector('#sparkline').innerHTML = "";
-//   var graph = d3.select("#sparkline").append("svg:svg").attr("width", "100%").attr("height", "100%");
-//   var data = portfolio.historicalStudentDebt;
-//   let max = data.reduce((max, n) => n > max ? n : max); // gets the max from historical
-//   let min = data.reduce((min, n) => n < min ? n: min); // gets the min from historical
-//   let screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-
-//   // X scale will fit values from 0-portfolio.historical.length within pixels 0- screenWidth
-//   var x = d3.scaleLinear().domain([0, portfolio.historicalStudentDebt.length]).range([0, screenWidth]);
-//   // Y scale will fit values from 0-max in array within pixels 0-120
-//   var y = d3.scaleLinear().domain([min, max]).range([120, 0]);
-//   // create a line object that represents the SVG line
-//   var line = d3.line()
-//     // assign the X function to plot line
-//     .x(function (d, i) {
-//       // verbose logging to show what's actually being done
-//       //console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
-//       // return the X coordinate where we want to plot this datapoint
-//       return x(i);
-//     })
-//     .y(function (d) {
-//       // verbose logging to show what's actually being done
-//       //console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + " using our yScale.");
-//       // return the Y coordinate where we want to plot this datapoint
-//       return y(d);
-//     })
-//     .curve(d3.curveNatural)
-//   // Listed below are differnt line types that can be tried: 
-//   // var interpolateTypes = [d3.curveLinear,d3.curveStepBefore,d3.curveStepAfter,d3.curveBasis,// d3.curveBasisOpen, d3.curveBasisClosed, d3.curveBundle,d3.curveCardinal,d3.curveCardinal,// d3.curveCardinalOpen,d3.curveCardinalClosed,d3.curveNatural];
-//   // display the line by appending an svg:path element with the data line we created above
-//   graph.append("svg:path").attr("d", line(data));
-// }
-
+// Renders the crypto card in the Portfolio Tab
 const renderCryptoCard = (portfolio) => {
   // * See renderMainApp() function
   // current prices and properties of portfolio are already set and refreshed
@@ -319,6 +242,7 @@ const renderCryptoCard = (portfolio) => {
   });
 }
 
+// Renders the Stock Card in the Portfolio Tab
 const renderStockCard = (portfolio) => {
   document.querySelector('#stockTotalAmountSpan').innerHTML = "";
   document.querySelector('#stockTable').innerHTML = "";
@@ -344,17 +268,20 @@ const renderStockCard = (portfolio) => {
   });
 }
 
+// Renders the Cash Card in the Portfolio Tab
 const renderCashCard = (portfolio) => {
   document.querySelector('#cashAmountSpan').innerHTML = "";
   document.querySelector('#cashAmountSpan').innerHTML = `$${portfolio.usd.toLocaleString()}`;
 }
 
+// Renders the Student Loan Card in the Portfolio Tab
 const renderStudentLoanCard = (portfolio) => {
   document.querySelector('#studentLoanSpan').innerHTML = "";
   document.querySelector('#studentLoanSpan').innerHTML = `$${portfolio.studentDebt.toLocaleString()}`;
 }
 
-// EDIT TAB JAVASCRIPT
+// EDIT TAB JAVASCRIPT BEGINS
+// Renders the Crypto Card in the Edit Tab
 const renderEditCryptoCard = (portfolio) => {
   document.querySelector('#editCryptoTable').innerHTML = "";
   // * See renderMainApp() function
@@ -390,7 +317,7 @@ const renderEditCryptoCard = (portfolio) => {
   });
 }
 
-
+// Renders the Stock Card in the Edit Tab
 const renderEditStockCard = (portfolio) => {
   document.querySelector('#editStockTable').innerHTML = "";
   // * See renderMainApp() function
@@ -398,12 +325,9 @@ const renderEditStockCard = (portfolio) => {
   // Renders a name and total for each row of the portfolio
   document.querySelector('#editStockTotalAmountSpan').innerHTML = `<button id="addStock" type="button" onclick="displayAddCurrencyToEdit('stock')">Add</button>`;
   const stockAssets = portfolio.assets.filter(asset => !asset.crypto);
-  console.log(stockAssets);
   stockAssets.map(async function (x) {
     const currentPrice = await x.currentPrice;
-    console.log(x.currentPrice);
-    //<span style="float: left; padding: 0 5vw 0 10vw;">${x.assetName} (${x.amount})
-    
+
     document.querySelector('#editStockTable').innerHTML +=
       `<tr>
             <td>
@@ -429,31 +353,21 @@ const renderEditStockCard = (portfolio) => {
   });
 }
 
+// Renders the Cash Card in the Edit Tab
 const renderEditCashCard = (portfolio) => {
   document.querySelector('#editCashAmountSpan').innerHTML = "";
   document.querySelector('#editCashAmountSpan').innerHTML = `<input id="usd" class="editTextBox" type="number" value="${portfolio.usd}" style="float: right"></input>`;
 }
 
+// Renders the Student Loan Card in the Edit Tab
 const renderEditStudentLoanCard = (portfolio) => {
   document.querySelector('#editStudentLoanSpan').innerHTML = "";
   document.querySelector('#editStudentLoanSpan').innerHTML = `<input id="studentLoan" class="editTextBox" type="number" step=100 value="${portfolio.studentDebt}" style="float: right;"></input>`;
 }
 
-
 // END OF EDIT TAB CODE
 
-
-
-
-
-
-
-// document.querySelector('#defaultOpen').addEventListener('click', function (e) {
-//   // To prevent it reloading
-//   e.preventDefault();
-//   renderMainApp(portfolio);
-// });
-
+// Opens the current tab
 function openCurrency(evt, CurrencyName) {
     // Declare all variables
     var i, tabcontent, tablinks;
@@ -528,6 +442,7 @@ async function addCurrencyToEdit(type) {
   document.querySelector('#addAmount').value = "";
 }
 
+// Adds assets to the watching array in the portfolio and renders them in the app
 async function addWatching(name,abbr,crypto = false,pass = false){
   name = name.toLowerCase();
   abbr = abbr.toLowerCase();
@@ -535,70 +450,69 @@ async function addWatching(name,abbr,crypto = false,pass = false){
   var price = null
   console.log(pass)
   console.log(crypto)
-try{
-  if (pass == true && crypto == true){
-    type = 'crypto';
-    var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
-    var response = await fetch(url);
-    var json = await response.json();
-    //console.log(json);
-    price = json[0].price_usd;
-  }
-  if (pass == true && crypto == false){
-    type = 'stock';
-    var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
-    var response =  await fetch(url);
-    var json = await response.json();
-    //console.log(json);
-    price = json;
-  }
-  if (document.getElementById("stockRadio").checked && pass == false) {
-    type = 'stock';
-    var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
-    var response =  await fetch(url);
-    var json = await response.json();
-    //console.log(json);
-    price = json;
-    portfolio.watching.push({name:name,abbreviation:abbr,crypto:false})
-  }
-  if (document.getElementById("cryptoRadio").checked && pass == false){
-    type = 'crypto';
-    var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
-    var response = await fetch(url);
-    var json = await response.json();
-    //console.log(json);
-    price = json[0].price_usd;
-    portfolio.watching.push({name:name,abbreviation:abbr,crypto:true})
-  }
-  
-  if(price != null){
-  var mytable = document.getElementById("watchingTable");
-  var row = mytable.insertRow(0);
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(1);
-    cell1.innerHTML = `
-      <div class="col-lg-06 col-md-06 col-sm-12" id="${name}WatchingCard">
-        <span class="cardHeadingSpan">${name.charAt(0).toUpperCase() + name.slice(1)}</span>
-        <span class="cardSubHeadingSpan" id="cashAmountSpan">$${Math.round(price * 100) / 100}</span>
-        <span class="cardSubHeadingSpan" id="watchingXSpan"><button
-                id="${name}WatchingCardX"
-                onclick="deleteFromWatching('${name}')"
-                type="button"
-                style="width: 2vw; color: asuMaroon; background-color: grey; border: none;"
-              > x</button></span
-      </div>`;
-  }
-  else{
-    alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
-  }
-}
-catch(err){
+  try{
+    if (pass == true && crypto == true){
+      type = 'crypto';
+      var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
+      var response = await fetch(url);
+      var json = await response.json();
+      //console.log(json);
+      price = json[0].price_usd;
+    }
+    if (pass == true && crypto == false){
+      type = 'stock';
+      var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
+      var response =  await fetch(url);
+      var json = await response.json();
+      //console.log(json);
+      price = json;
+    }
+    if (document.getElementById("stockRadio").checked && pass == false) {
+      type = 'stock';
+      var url = `https://api.iextrading.com/1.0/stock/${abbr}/price`;
+      var response =  await fetch(url);
+      var json = await response.json();
+      //console.log(json);
+      price = json;
+      portfolio.watching.push({name:name,abbreviation:abbr,crypto:false})
+    }
+    if (document.getElementById("cryptoRadio").checked && pass == false){
+      type = 'crypto';
+      var url = `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=USD`;
+      var response = await fetch(url);
+      var json = await response.json();
+      //console.log(json);
+      price = json[0].price_usd;
+      portfolio.watching.push({name:name,abbreviation:abbr,crypto:true})
+    }
+    
+    if(price != null){
+    var mytable = document.getElementById("watchingTable");
+    var row = mytable.insertRow(0);
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(1);
+      cell1.innerHTML = `
+        <div class="col-lg-06 col-md-06 col-sm-12" id="${name}WatchingCard">
+          <span class="cardHeadingSpan">${name.charAt(0).toUpperCase() + name.slice(1)}</span>
+            <button
+              id="${name}WatchingCardX"
+              onclick="deleteFromWatching('${name}')"
+              type="button"
+              style="width: 2vw; color: asuMaroon; background-color: light-grey; border: none;"
+            > x </button>
+          <span class="cardSubHeadingSpan" id="cashAmountSpan">$${Math.round(price * 100) / 100}</span>
+        </div>`;
+    }
+    else{
       alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
-}
-console.log(portfolio.watching)
-saveToLocalStorage();
-renderMainApp(portfolio)
+    }
+  }
+  catch(err){
+        alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
+  }
+  saveToLocalStorage();
+  renderMainApp(portfolio)
 }
 
 function deleteFromWatching(Name){
@@ -621,23 +535,23 @@ function fillWatching(){
   }
 }
 
-// add event listeners below
+// EVENT LISTENERS SECTION && INITIALIZATION
 
 /* wait until all phonegap/cordova is loaded then call onDeviceReady*/
 document.addEventListener("deviceready", onDeviceReady(), false);
 function onDeviceReady() {
   init();
-  console.log('onDeviceReady worked');
 }
-//Below is the onLoad function I was calling before converting to phonegap
-// document.body.addEventListener('load', init(), false);
+
 async function init() {
   if (localStorage.portfolio === undefined) {
     portfolio = demoPortfolio;
     renderMainApp(portfolio);
+    console.log('App started with Demo portfolio');
   } else {
     portfolio = JSON.parse(localStorage.portfolio);
     renderMainApp(portfolio);
+    console.log('App started with Portfolio from localStorage')
   }
   saveToLocalStorage();
   fillWatching();
@@ -655,11 +569,16 @@ document.querySelector('#editTabButton').addEventListener('click', function (e) 
 document.querySelector('#studentLoanCard').addEventListener('click', function (e) {
   // To prevent it reloading
   e.preventDefault();
-  console.log(e);
   
   document.querySelector('#sparkline').style.backgroundColor = "black";
   renderStudentLoanHeading(portfolio);
   renderGraph(portfolio);
+  // switchBack to main view after a while
+  var millisecondsToWait = 2000;
+  setTimeout(function () {
+    document.querySelector('#sparkline').style.backgroundColor = "#008080";
+    renderMainApp(portfolio);
+  }, millisecondsToWait);
 })
 
 document.querySelector('#editSubmitButton').addEventListener('click', function (e) {
@@ -683,11 +602,8 @@ document.querySelector('#editSubmitButton').addEventListener('click', function (
     } else if (el.id == "studentLoan") {
       portfolio.studentDebt = parseFloat(el.value);
     };
-    console.log(portfolio);
   });
 
-
-  console.log(portfolio);
   // call renderMainApp at the end so the graphs and everything chang
   //document.getElementById("Edit").submit();
   renderMainApp(portfolio);
