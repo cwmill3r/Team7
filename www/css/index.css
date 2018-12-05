@@ -90,6 +90,11 @@ path {
   padding: 1vh 5vw 1vh 5vw;
 }
 
+.clickHere {
+  font-size: 3vh;
+  color: #990033;
+}
+
 .cardTableDiv {
   clear: both;
   display: block;
@@ -151,6 +156,10 @@ max-width: 31vw;
 #studentLoan {
   max-width: 31vw;
   margin: 0 1vw;
+}
+
+#studentLoanCard {
+  border: 3px solid #990033;
 }
 
 #editStudentLoanHeading {
