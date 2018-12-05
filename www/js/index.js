@@ -512,7 +512,7 @@ async function addWatching(name,abbr,crypto = false,pass = false){
         alert(`Invalid ${type}: Please check that the correct radio button is selected and textbox values are accurate.`)
   }
   saveToLocalStorage();
-  renderMainApp(portfolio)
+  renderMainApp(portfolio);
 }
 
 function deleteFromWatching(Name){
