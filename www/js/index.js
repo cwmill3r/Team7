@@ -497,7 +497,7 @@ async function addWatching(name,abbr,crypto = false,pass = false){
           <span class="cardHeadingSpan">${name.charAt(0).toUpperCase() + name.slice(1)}</span>
             <button
               id="${name}WatchingCardX"
-              onclick="deleteFromWatching('${name}')"
+              onclick="deleteFromWatching('${name}','${name}WatchingCard')"
               type="button"
               style="width: 2vw; color: asuMaroon; background-color: light-grey; border: none;"
             > x </button>
@@ -515,7 +515,7 @@ async function addWatching(name,abbr,crypto = false,pass = false){
   renderMainApp(portfolio)
 }
 
-function deleteFromWatching(Name){
+function deleteFromWatching(Name,id){
   //console.log(Name)
 
   for(i=0;i<=portfolio.watching.length-1;i++){
@@ -526,8 +526,12 @@ function deleteFromWatching(Name){
       renderMainApp(portfolio)
     }
   }
-  //console.log(portfolio.watching)
+  console.log(id)
+  document.getElementById(id).outerHTML = "";
+
 }
+
+
 
 function fillWatching(){
   for(i = 0; i < portfolio.watching.length; i++){
