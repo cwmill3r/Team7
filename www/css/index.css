@@ -93,6 +93,7 @@ path {
 .clickHere {
   font-size: 3vh;
   color: #990033;
+  clear: both;
 }
 
 .cardTableDiv {
