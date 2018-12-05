@@ -36,11 +36,15 @@ form {
 .tab button {
     background-color: inherit;
     /*float: left;*/
-    border: none;
+    border: 2px solid black;
     outline: none;
     cursor: pointer;
+    height: 80%;
     /*padding: 14px 16px;*/
     transition: 0.3s;
+    font-size: 90%;
+    text-align: center;
+    
 }
 
 /* Change background color of buttons on hover */
@@ -165,6 +169,10 @@ max-width: 31vw;
 
 #editStudentLoanHeading {
   font-size: 3.6vh;
+}
+
+#editSubmitButton{
+  border: 2px solid white;
 }
 
 /* For phones (portrait) unless another @media rule below is fired */
