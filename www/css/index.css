@@ -137,6 +137,9 @@ button {
   border-radius: 10px;
 }
 
+#watchingButton {
+  padding-right: 2vw;
+}
 .watchingCard {
   display: block;
   padding: 1vh 5vw 1vh 3vw;
