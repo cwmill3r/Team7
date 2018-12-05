@@ -20,14 +20,14 @@
     <!-- Change 'name', 'description', and 'author' tags below               -->
     <!-- =================================================================== -->
 
-    <name>team7</name>
+    <name>Modern Student Portfolio</name>
 
     <description>
-        Team 7 Final Project
+        This is a portfolio app for students that incorporates crypto, stocks, and student loans
     </description>
 
     <author email="cwmiller@asu.edu" href="http://www.asu.edu">
-        Chris Miller, Henry Alfred, Tanner Millyard, Richard Lee
+        Chris Miller, Alfred Henry, Tanner Millyard, Richard Lee
     </author>
 
     <content src="index.html" />  <!-- the starting point of your hybrid app -->
