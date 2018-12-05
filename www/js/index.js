@@ -146,6 +146,10 @@ async function setCurrentPortfolioValue() {
   };
   portfolio.currentPortfolioValue = stockCryptoValue + portfolio.usd;
   portfolio.historical[portfolio.historical.length - 1] = portfolio.currentPortfolioValue;
+  portfolio.historicalStudentDebt = portfolio.historical.map(function(x) {
+    return x - portfolio.studentDebt;
+  });
+  console.log(portfolio);
 }
 
 // Subtotal for crypto with current prices
@@ -208,10 +212,18 @@ async function renderMainApp (portfolio) {
   renderStockCard(portfolio); // fetches current prices within function
 }
 
+
 const renderHeading = (portfolio) => {
   // Writes heading text with total portfolio value
   let headingText = `<h3>${portfolio.name}</h3>` + `<p>$${Math.round(portfolio.historical[portfolio.historical.length - 1]).toLocaleString()}</p>`;
   document.querySelector('#sparkline').innerHTML = headingText;
+}
+
+const renderStudentLoanHeading = (portfolio) => {
+  // Writes heading text with total portfolio value
+  let headingText = `<h3>${portfolio.name}</h3>` + `<p>$${Math.round(portfolio.currentPortfolioValue - portfolio.studentDebt).toLocaleString()}</p>`;
+  document.querySelector('#sparkline').innerHTML = headingText;
+  console.log('im doing something');
 }
 
 const renderGraph = (portfolio) => {
@@ -247,6 +259,42 @@ const renderGraph = (portfolio) => {
   // display the line by appending an svg:path element with the data line we created above
   graph.append("svg:path").attr("d", line(data));
 }
+
+// const renderStudentLoanGraph = (portfolio) => {
+//   // Start of sparkline code
+//   // create an SVG element inside the #graph div that fills 100% of the div
+//   document.querySelector('#sparkline').innerHTML = "";
+//   var graph = d3.select("#sparkline").append("svg:svg").attr("width", "100%").attr("height", "100%");
+//   var data = portfolio.historicalStudentDebt;
+//   let max = data.reduce((max, n) => n > max ? n : max); // gets the max from historical
+//   let min = data.reduce((min, n) => n < min ? n: min); // gets the min from historical
+//   let screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+
+//   // X scale will fit values from 0-portfolio.historical.length within pixels 0- screenWidth
+//   var x = d3.scaleLinear().domain([0, portfolio.historicalStudentDebt.length]).range([0, screenWidth]);
+//   // Y scale will fit values from 0-max in array within pixels 0-120
+//   var y = d3.scaleLinear().domain([min, max]).range([120, 0]);
+//   // create a line object that represents the SVG line
+//   var line = d3.line()
+//     // assign the X function to plot line
+//     .x(function (d, i) {
+//       // verbose logging to show what's actually being done
+//       //console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
+//       // return the X coordinate where we want to plot this datapoint
+//       return x(i);
+//     })
+//     .y(function (d) {
+//       // verbose logging to show what's actually being done
+//       //console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + " using our yScale.");
+//       // return the Y coordinate where we want to plot this datapoint
+//       return y(d);
+//     })
+//     .curve(d3.curveNatural)
+//   // Listed below are differnt line types that can be tried: 
+//   // var interpolateTypes = [d3.curveLinear,d3.curveStepBefore,d3.curveStepAfter,d3.curveBasis,// d3.curveBasisOpen, d3.curveBasisClosed, d3.curveBundle,d3.curveCardinal,d3.curveCardinal,// d3.curveCardinalOpen,d3.curveCardinalClosed,d3.curveNatural];
+//   // display the line by appending an svg:path element with the data line we created above
+//   graph.append("svg:path").attr("d", line(data));
+// }
 
 const renderCryptoCard = (portfolio) => {
   // * See renderMainApp() function
@@ -581,6 +629,16 @@ document.querySelector('#editTabButton').addEventListener('click', function (e) 
   renderEditCryptoCard(portfolio);
   renderEditStockCard(portfolio);
   renderEditStudentLoanCard(portfolio);
+})
+
+document.querySelector('#studentLoanCard').addEventListener('click', function (e) {
+  // To prevent it reloading
+  e.preventDefault();
+  console.log(e);
+  
+  document.querySelector('#sparkline').style.backgroundColor = "black";
+  renderStudentLoanHeading(portfolio);
+  renderGraph(portfolio);
 })
 
 document.querySelector('#editSubmitButton').addEventListener('click', function (e) {
