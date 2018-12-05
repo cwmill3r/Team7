@@ -8,7 +8,13 @@
   <title>ASU Portfolio</title>
 
   <!-- This is not a secure content policy, should be locked down for prod -->
-  <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'" />
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src * 'unsafe-inline';
+          style-src 'self' http://* 'unsafe-inline';
+          script-src 'self' http://* 'unsafe-inline' 'unsafe-eval';
+          "
+  />
 
   <link rel="stylesheet" href="./css/index.css">
   <script src="https://d3js.org/d3.v5.min.js"></script>
