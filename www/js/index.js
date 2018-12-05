@@ -581,6 +581,12 @@ try{
       <div class="col-lg-06 col-md-06 col-sm-12" id="${name}WatchingCard">
         <span class="cardHeadingSpan">${name.charAt(0).toUpperCase() + name.slice(1)}</span>
         <span class="cardSubHeadingSpan" id="cashAmountSpan">$${Math.round(price * 100) / 100}</span>
+        <span class="cardSubHeadingSpan" id="watchingXSpan"><button
+                id="${name}WatchingCardX"
+                onclick="deleteFromWatching('${name}')"
+                type="button"
+                style="width: 2vw; color: asuMaroon; background-color: grey; border: none;"
+              > x</button></span
       </div>`;
   }
   else{
@@ -592,6 +598,21 @@ catch(err){
 }
 console.log(portfolio.watching)
 saveToLocalStorage();
+renderMainApp(portfolio)
+}
+
+function deleteFromWatching(Name){
+  //console.log(Name)
+
+  for(i=0;i<=portfolio.watching.length-1;i++){
+    //console.log(portfolio.watching[i])
+    if (portfolio.watching[i].name.toLowerCase() == Name.toLowerCase()){
+      console.log(i)
+      portfolio.watching.splice(i, 1);
+      renderMainApp(portfolio)
+    }
+  }
+  //console.log(portfolio.watching)
 }
 
 function fillWatching(){
